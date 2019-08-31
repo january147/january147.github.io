@@ -1,8 +1,6 @@
-# Linux定时任务--cron
-
 cron是Linux系统中用于执行计划任务的程序，利用cron可以实现在指定的时间周期性的执行某些任务。
 
-## crontab文件
+# crontab文件
 
 cron执行的任务由crontab类型的配置文件指定，crontab文件的基本格式如下：
 
@@ -31,7 +29,7 @@ MAILTO=username
 
 以`#`开头的为注释，每一项定时任务**占用一行**，共有6个字段（系统crontab文件有7个字段，多了一个用户名字段），使用空格分隔每个字段。其中前面5个字段则是该命令执行的时间，最后一个字段是需要执行的命令。
 
-### 时间字段
+## 时间字段
 
 命令执行时间的取值范围如下：
 
@@ -65,7 +63,7 @@ MAILTO=username
 | @daily    | 每天一次   |
 | @hourly   | 每小时一次 |
 
-### 命令字段
+## 命令字段
 
 命令字段可以是任意有效命令，并且第一个**非转义**（使用`\`转义）的`%`后边的内容会作为该命令的**标准输入**（stdin），并且所有非转义的`%`会被作为换行符处理（在标准输入内容中需要换行时就可以使用`%`来表示）
 
@@ -76,9 +74,9 @@ MAILTO=username
 > 访问http://man7.org/linux/man-pages/man5/crontab.5.html获取关于crontab文件的格式更详细的描述或者在linux终端中键入man 5 crontab来获取
 
 
-## 创建和修改定时任务的方法
+# 创建和修改定时任务的方法
 
-### 编辑系统crontab文件
+## 编辑系统crontab文件
 
 第一种方法是使用**文本编辑器**直接修改系统crontab文件（main system crontab file）。系统crontab文件路径为`/etc/crontab`，编辑该文件则可以调整系统定时任务的执行，该文件内容如下：
 
@@ -100,7 +98,7 @@ PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
 
 ```
 
-### 使用crontab命令
+## 使用crontab命令
 
 第二种方式是修改/var/spool/cron/\<username\>用户crontab文件，一般通过**crontab命令**来操作该文件，流程如下：
 
@@ -127,7 +125,7 @@ crontab my_crontab
 
 > 访问http://man7.org/linux/man-pages/man1/crontab.1.html获取关于crontab命令更详细的描述，或者在linux终端中键入man  crontab来获取。
 
-## 关于MAILTO
+# 关于MAILTO
 
 指定了MAILTO选项并且在安装了**本地邮件系统**（postfix，sendmail）时，cron程序会把执行命令的输出内容通过邮件发送给MAILTO指定的用户，下面是cron程序发送的邮件：
 
@@ -161,6 +159,6 @@ hello crontab
 
 本地用户的邮件会放置在`/var/mail/<username>`文件中，可以安装`mailx`软件来管理和查看
 
-## 关于运行日志
+# 关于运行日志
 
 对于安装了`rsyslog`的系统，在`/var/log/`目录中会有cron的运行日志，没有`rsyslog`的系统可以使用`journalctl`命令查看日志，键入`journalctl -u cron.service`或者`journalctl | grep cron`即可。

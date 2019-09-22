@@ -1,3 +1,8 @@
+---
+tags:
+ - Linux
+---
+
 &emsp;&emsp;cron是Linux系统中用于执行计划任务的程序，利用cron可以实现在指定的时间周期性的执行某些任务。
 
 # crontab文件

@@ -1,6 +1,6 @@
 ---
 tags: 
-  - shell
+  - Bash
   - linux
 ---
 &emsp;&emsp;no login shell和login shell在启动和退出时会执行不同的脚本文件从而影响shell中的环境变量，本文根据bash的文档描述了两种shell启动时自动执行的脚本文件的区别。

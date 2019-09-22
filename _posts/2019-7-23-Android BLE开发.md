@@ -1,3 +1,11 @@
+---
+tags:
+ - Android
+ - Bluetooth
+---
+
+
+
 &emsp;&emsp;本文描述了Android系统扫描连接BLE设备(蓝牙透传模块)并接收和发送数据的相关知识。
 
 # 约定

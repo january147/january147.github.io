@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="ffmpeg命令行工具录制命令Linux使用x11grab来录制屏幕 1ffmpeg -f x11grab -framerate 25 -video_size 1920x1080 -i :0.0 -r 25 -s 1920x1080 out.mp4  其中-f x11grab -framerate 25 -video_size 1920x1080 -i :0.0设置获取的屏幕视频流参数，-i指定了">
+<meta property="og:type" content="article">
+<meta property="og:title" content="fmpeg命令工具">
+<meta property="og:url" content="http://example.com/2021/04/06/%E5%A4%9A%E5%AA%92%E4%BD%93/fmpeg%E5%91%BD%E4%BB%A4%E5%B7%A5%E5%85%B7/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="ffmpeg命令行工具录制命令Linux使用x11grab来录制屏幕 1ffmpeg -f x11grab -framerate 25 -video_size 1920x1080 -i :0.0 -r 25 -s 1920x1080 out.mp4  其中-f x11grab -framerate 25 -video_size 1920x1080 -i :0.0设置获取的屏幕视频流参数，-i指定了">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-06T07:09:20.153Z">
+<meta property="article:modified_time" content="2021-01-04T14:20:44.427Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/%E5%A4%9A%E5%AA%92%E4%BD%93/fmpeg%E5%91%BD%E4%BB%A4%E5%B7%A5%E5%85%B7/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>fmpeg命令工具 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#ffmpeg%E5%91%BD%E4%BB%A4%E8%A1%8C%E5%B7%A5%E5%85%B7"><span class="nav-number">1.</span> <span class="nav-text">ffmpeg命令行工具</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BD%95%E5%88%B6%E5%91%BD%E4%BB%A4"><span class="nav-number">1.1.</span> <span class="nav-text">录制命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Linux"><span class="nav-number">1.1.1.</span> <span class="nav-text">Linux</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Windows"><span class="nav-number">1.1.2.</span> <span class="nav-text">Windows</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Mac"><span class="nav-number">1.1.3.</span> <span class="nav-text">Mac</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E8%A7%A3%E4%B8%8E%E5%A4%8D%E7%94%A8"><span class="nav-number">1.2.</span> <span class="nav-text">分解与复用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A0%BC%E5%BC%8F%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.2.1.</span> <span class="nav-text">格式转换</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8F%90%E5%8F%96%E9%9F%B3%E8%A7%86%E9%A2%91"><span class="nav-number">1.2.2.</span> <span class="nav-text">提取音视频</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%84%E7%90%86%E5%8E%9F%E5%A7%8B%E6%95%B0%E6%8D%AE"><span class="nav-number">1.3.</span> <span class="nav-text">处理原始数据</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BB%A4%E9%95%9C%E5%91%BD%E4%BB%A4"><span class="nav-number">1.4.</span> <span class="nav-text">滤镜命令</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E8%A3%81%E5%89%AA"><span class="nav-number">1.4.1.</span> <span class="nav-text">视频裁剪</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8F%A0%E5%8A%A0%E5%9B%BE%E7%89%87"><span class="nav-number">1.4.2.</span> <span class="nav-text">叠加图片</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%86%E7%89%87%E4%B8%8E%E5%90%88%E5%B9%B6"><span class="nav-number">1.5.</span> <span class="nav-text">分片与合并</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E5%92%8C%E8%A7%86%E9%A2%91%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.6.</span> <span class="nav-text">图片和视频转换</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%86%E9%A2%91%E8%BD%AC%E5%9B%BE%E7%89%87"><span class="nav-number">1.6.1.</span> <span class="nav-text">视频转图片</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9B%BE%E7%89%87%E8%BD%AC%E8%A7%86%E9%A2%91"><span class="nav-number">1.6.2.</span> <span class="nav-text">图片转视频</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%B4%E6%92%AD%E6%8E%A8%E6%B5%81%E4%B8%8E%E6%8B%89%E6%B5%81"><span class="nav-number">1.7.</span> <span class="nav-text">直播推流与拉流</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8E%A8%E6%B5%81"><span class="nav-number">1.7.1.</span> <span class="nav-text">推流</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8B%89%E6%B5%81"><span class="nav-number">1.7.2.</span> <span class="nav-text">拉流</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/%E5%A4%9A%E5%AA%92%E4%BD%93/fmpeg%E5%91%BD%E4%BB%A4%E5%B7%A5%E5%85%B7/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          fmpeg命令工具
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-06 15:09:20" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:20+08:00">2021-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-01-04 22:20:44" itemprop="dateModified" datetime="2021-01-04T22:20:44+08:00">2021-01-04</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%A4%9A%E5%AA%92%E4%BD%93/" itemprop="url" rel="index"><span itemprop="name">多媒体</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="ffmpeg命令行工具"><a href="#ffmpeg命令行工具" class="headerlink" title="ffmpeg命令行工具"></a>ffmpeg命令行工具</h1><h2 id="录制命令"><a href="#录制命令" class="headerlink" title="录制命令"></a>录制命令</h2><h3 id="Linux"><a href="#Linux" class="headerlink" title="Linux"></a>Linux</h3><p>使用<code>x11grab</code>来录制屏幕</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f x11grab -framerate 25 -video_size 1920x1080 -i :0.0 -r 25 -s 1920x1080 out.mp4</span><br></pre></td></tr></table></figure>
+
+<p>其中<code>-f x11grab -framerate 25 -video_size 1920x1080 -i :0.0</code>设置获取的屏幕视频流参数，<code>-i</code>指定了输入源，<code>:0.0</code>是<code>x11</code>中表示屏幕的方式； <code>-r 25 -s 1920x1080</code>指定输出参数，<code>-r</code>指定帧率，<code>-s</code>指定分辨率 。</p>
+<p>使用<code>alsa</code>来录制音频</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -video_size 1024x768 -framerate 25 -f x11grab -i :0.0+100,200 -f alsa -ac 2 -i hw:0 output.mkv</span><br></pre></td></tr></table></figure>
+
+<h3 id="Windows"><a href="#Windows" class="headerlink" title="Windows"></a>Windows</h3><p>使用<code>DirectShow</code>来录制屏幕和声音</p>
+<p>录制屏幕</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f dshow -i video&#x3D;&quot;screen-capture-recorder&quot; output.mkv</span><br></pre></td></tr></table></figure>
+
+<p>录制屏幕和声音(麦克风)</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f dshow -i video&#x3D;&quot;UScreenCapture&quot;:audio&#x3D;&quot;Microphone&quot; output.mkv</span><br></pre></td></tr></table></figure>
+
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f dshow -i video&#x3D;&quot;UScreenCapture&quot; -f dshow -i audio&#x3D;&quot;Microphone&quot; output.mkv</span><br></pre></td></tr></table></figure>
+
+<p>可以使用如下命令查看<code>DirectShow</code>支持的输入设备，I如果需要录制声卡中播放的声音，需要选择<code>Stereo Mix</code>设备</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -list_devices true -f dshow -i dummy</span><br></pre></td></tr></table></figure>
+
+<h3 id="Mac"><a href="#Mac" class="headerlink" title="Mac"></a>Mac</h3><p>使用<code>avfoundation</code>来录制屏幕和声音</p>
+<h2 id="分解与复用"><a href="#分解与复用" class="headerlink" title="分解与复用"></a>分解与复用</h2><h3 id="格式转换"><a href="#格式转换" class="headerlink" title="格式转换"></a>格式转换</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -vcodec copy -acodec copy out.flv</span><br></pre></td></tr></table></figure>
+
+<p><code>-vcodec copy</code>和<code>-acodec copy</code>设置不进行重新编解码</p>
+<h3 id="提取音视频"><a href="#提取音视频" class="headerlink" title="提取音视频"></a>提取音视频</h3><p>抽取视频</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -vcodec copy -an out.h264</span><br></pre></td></tr></table></figure>
+
+<p>抽取音频</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -acodec copy -vn out.aac</span><br></pre></td></tr></table></figure>
+
+<h2 id="处理原始数据"><a href="#处理原始数据" class="headerlink" title="处理原始数据"></a>处理原始数据</h2><p>提取原始视频数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -an -c:v rawvideo -pix_fmt yuv420p output.yuv</span><br></pre></td></tr></table></figure>
+
+<p><code>-an</code>表示不包括音频（<code>audio no</code>）</p>
+<p><code>-c:v</code></p>
+<p>提取原始音频数据</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -vn -ar 44100 -ac2 -f s16le out.pcm</span><br></pre></td></tr></table></figure>
+
+<p><code>-vn</code>表示不包括视频(<code>video no</code>)</p>
+<p><code>-ar 44100</code>用于设置采样率(<code>audio rate</code>)</p>
+<p><code>-ac 2</code>设置双声道(<code>audio channel</code>)</p>
+<p><code>-f s16le</code>设置音频采样数据数据格式为16bit有符号小端(<code>signed 16 bit little endian</code>)</p>
+<h2 id="滤镜命令"><a href="#滤镜命令" class="headerlink" title="滤镜命令"></a>滤镜命令</h2><h3 id="视频裁剪"><a href="#视频裁剪" class="headerlink" title="视频裁剪"></a>视频裁剪</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -vf crop&#x3D;in_w-200:in_h-200 -c:v libx264 -c:a copy out.mp4</span><br></pre></td></tr></table></figure>
+
+<p><code>-vf</code>指定视频滤镜，<code>crop</code>是滤镜名称，等号后边的是滤镜参数</p>
+<p><code>-c:v</code>和<code>-c:a</code>分别指定视频和音频编码器</p>
+<h3 id="叠加图片"><a href="#叠加图片" class="headerlink" title="叠加图片"></a>叠加图片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -i input.png -filter_complex overlay&#x3D;W-w out.mp4</span><br></pre></td></tr></table></figure>
+
+<p><code>-filter_complex</code>用于指定多输入/多输出的滤镜，<code>overlay</code>滤镜用于叠加两个视频（也可以叠加视频和图像），<code>overlay</code>中叠加图像的<code>x</code>坐标设置为<code>W-w</code>，其中<code>W</code>(大写)表示主视频的宽度，<code>w</code>（小写）表示叠加视频（图像）的宽度。</p>
+<p>滤镜的参数写在滤镜名称的等号后边，不同参数使用<code>:</code>(冒号)隔开，参数可以是<code>key=value</code>形式（参数名称=参数值），也可以是<code>value</code>形式，对于<code>value</code>形式的参数，其默认的<code>key</code>为源代码中按照顺序定义的<code>key</code>。</p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://ffmpeg.org/ffmpeg-filters.html">https://ffmpeg.org/ffmpeg-filters.html</a></p>
+</blockquote>
+<h2 id="分片与合并"><a href="#分片与合并" class="headerlink" title="分片与合并"></a>分片与合并</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -ss 00:01:01 -t 10 out.ts</span><br></pre></td></tr></table></figure>
+
+<p><code>-ss 00:01:01</code>指定起始时间，格式为<code>hour:minute:second</code></p>
+<p><code>-t</code>指定视频片段时长</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f concat -i inputs.txt out.mp4</span><br></pre></td></tr></table></figure>
+
+<p><code>input.txt</code>描述了需要合并的问题，格式如下</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">file &lt;filepath1&gt;</span><br><span class="line">file &lt;filepath2&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="图片和视频转换"><a href="#图片和视频转换" class="headerlink" title="图片和视频转换"></a>图片和视频转换</h2><h3 id="视频转图片"><a href="#视频转图片" class="headerlink" title="视频转图片"></a>视频转图片</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -i input.mp4 -r 1 -f image2 image-%3d.jpeg</span><br></pre></td></tr></table></figure>
+
+<p>在ffmpeg中，<code>-i</code>前的参数适用于输入，<code>-i</code>后的参数适用于输出</p>
+<h3 id="图片转视频"><a href="#图片转视频" class="headerlink" title="图片转视频"></a>图片转视频</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -f image2 -r 1 image-%3d.jpeg output.mp4</span><br></pre></td></tr></table></figure>
+
+<h2 id="直播推流与拉流"><a href="#直播推流与拉流" class="headerlink" title="直播推流与拉流"></a>直播推流与拉流</h2><h3 id="推流"><a href="#推流" class="headerlink" title="推流"></a>推流</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg -re -i out.mp4 -c copy -f flv rtmp:&#x2F;&#x2F;server</span><br></pre></td></tr></table></figure>
+
+<h3 id="拉流"><a href="#拉流" class="headerlink" title="拉流"></a>拉流</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">ffmpeg - rtmp:&#x2F;&#x2F;server -c copy dump.mp4</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E5%A4%9A%E5%AA%92%E4%BD%93/ffmpeg%E5%BC%80%E5%8F%91/" rel="prev" title="ffmpeg开发">
+                  <i class="fa fa-chevron-left"></i> ffmpeg开发
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E5%A4%9A%E5%AA%92%E4%BD%93/ffmpeg%E7%BC%96%E8%A7%A3%E7%A0%81%E6%B5%81%E7%A8%8B/" rel="next" title="ffmpeg编解码流程">
+                  ffmpeg编解码流程 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

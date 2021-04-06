@@ -1,0 +1,465 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="gazebo模拟仿真1. 简介  gazebo是一个物理仿真模拟软件，可以用于各类机器人的仿真测试。 2.  安装  gazebo推荐的运行环境为ubuntu，官方提供了供ubuntu使用的仓库，可以添加仓库后使用apt进行安装使用，非常方便，不过由于国内网络环境问题，安装很慢。另外gazebo也为其他平台（Windows和MacOS）提供了源代码，可以进行编译安装。   ubuntu18.04中">
+<meta property="og:type" content="article">
+<meta property="og:title" content="gazebo学习笔记">
+<meta property="og:url" content="http://example.com/2021/04/06/ros/gazebo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="gazebo模拟仿真1. 简介  gazebo是一个物理仿真模拟软件，可以用于各类机器人的仿真测试。 2.  安装  gazebo推荐的运行环境为ubuntu，官方提供了供ubuntu使用的仓库，可以添加仓库后使用apt进行安装使用，非常方便，不过由于国内网络环境问题，安装很慢。另外gazebo也为其他平台（Windows和MacOS）提供了源代码，可以进行编译安装。   ubuntu18.04中">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/px4_sitl_overview.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/QQ截图20201105224532.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/QQ截图20201105224617.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/QQ截图20201105224647.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/QQ截图20201105224800.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/QQ截图20201105224942.png">
+<meta property="og:image" content="c:/Users/january/OneDrive/blog/materials/gazebo_uav.png">
+<meta property="article:published_time" content="2021-04-06T07:09:19.934Z">
+<meta property="article:modified_time" content="2021-04-06T08:37:41.338Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/january/OneDrive/blog/materials/px4_sitl_overview.png">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/ros/gazebo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>gazebo学习笔记 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#gazebo%E6%A8%A1%E6%8B%9F%E4%BB%BF%E7%9C%9F"><span class="nav-number">1.</span> <span class="nav-text">gazebo模拟仿真</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1. 简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-%E5%AE%89%E8%A3%85"><span class="nav-number">1.2.</span> <span class="nav-text">2.  安装</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#2-1-%E6%9C%80%E7%AE%80%E5%8D%95%E7%9A%84%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.1.</span> <span class="nav-text">2.1 最简单的方式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#2-2-%E4%BD%BF%E7%94%A8gazebo%E5%AE%98%E6%96%B9%E7%9A%84%E4%BB%93%E5%BA%93"><span class="nav-number">1.2.2.</span> <span class="nav-text">2.2 使用gazebo官方的仓库</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.3.</span> <span class="nav-text">3. 基本概念</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-1-gazebo%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%9E%B6%E6%9E%84"><span class="nav-number">1.4.</span> <span class="nav-text">3.1 gazebo的基本架构</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#3-2-sdf"><span class="nav-number">1.4.1.</span> <span class="nav-text">3.2 sdf</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-3-world"><span class="nav-number">1.4.2.</span> <span class="nav-text">3.3 world</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-4-model"><span class="nav-number">1.4.3.</span> <span class="nav-text">3.4 model</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-5-link"><span class="nav-number">1.4.4.</span> <span class="nav-text">3.5 link</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-6-joint"><span class="nav-number">1.4.5.</span> <span class="nav-text">3.6 joint</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-7-plugin"><span class="nav-number">1.4.6.</span> <span class="nav-text">3.7 plugin</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.4.7.</span> <span class="nav-text">3.8 注意事项</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#3-8-1-%E7%BD%91%E7%BB%9C%E9%97%AE%E9%A2%98%E5%AF%BC%E8%87%B4%E7%9A%84%E5%B4%A9%E6%BA%83%E5%92%8C%E6%97%A0%E5%93%8D%E5%BA%94"><span class="nav-number">1.4.7.1.</span> <span class="nav-text">3.8.1 网络问题导致的崩溃和无响应</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#3-8-2-%E6%9C%AC%E5%9C%B0%E6%A8%A1%E5%9E%8B%E5%92%8C%E6%8F%92%E4%BB%B6%E7%9A%84%E5%8A%A0%E8%BD%BD%E8%B7%AF%E5%BE%84"><span class="nav-number">1.4.8.</span> <span class="nav-text">3.8.2 本地模型和插件的加载路径</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%BD%BF%E7%94%A8gazebo%E8%BF%9B%E8%A1%8C%E6%97%A0%E4%BA%BA%E6%9C%BA%E4%BB%BF%E7%9C%9F"><span class="nav-number">1.5.</span> <span class="nav-text">4. 使用gazebo进行无人机仿真</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#4-1-%E5%9F%BA%E6%9C%AC%E6%B5%81%E7%A8%8B"><span class="nav-number">1.5.1.</span> <span class="nav-text">4.1 基本流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-2-PX4%E7%AE%80%E4%BB%8B"><span class="nav-number">1.5.2.</span> <span class="nav-text">4.2 PX4简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-3-%E5%AE%89%E8%A3%85PX4"><span class="nav-number">1.5.3.</span> <span class="nav-text">4.3 安装PX4</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95"><span class="nav-number">1.5.4.</span> <span class="nav-text">4.4 仿真测试</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-1-%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95%E7%B3%BB%E7%BB%9F%E5%9F%BA%E6%9C%AC%E7%BB%93%E6%9E%84"><span class="nav-number">1.5.5.</span> <span class="nav-text">4.4.1 仿真测试系统基本结构</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-2-%E4%BB%BF%E7%9C%9F%E6%B5%8B%E8%AF%95%E5%90%84%E9%83%A8%E4%BB%B6%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="nav-number">1.5.6.</span> <span class="nav-text">4.4.2 仿真测试各部件启动流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#4-4-3-%E5%85%B6%E4%BB%96"><span class="nav-number">1.5.7.</span> <span class="nav-text">4.4.3 其他</span></a></li></ol></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/ros/gazebo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          gazebo学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-04-06 15:09:19 / Modified: 16:37:41" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:19+08:00">2021-04-06</time>
+    </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/ros/" itemprop="url" rel="index"><span itemprop="name">ros</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="gazebo模拟仿真"><a href="#gazebo模拟仿真" class="headerlink" title="gazebo模拟仿真"></a>gazebo模拟仿真</h1><h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>  gazebo是一个物理仿真模拟软件，可以用于各类机器人的仿真测试。</p>
+<h2 id="2-安装"><a href="#2-安装" class="headerlink" title="2.  安装"></a>2.  安装</h2><p>  gazebo推荐的运行环境为ubuntu，官方提供了供ubuntu使用的仓库，可以添加仓库后使用apt进行安装使用，非常方便，不过由于国内网络环境问题，安装很慢。另外gazebo也为其他平台（Windows和MacOS）提供了源代码，可以进行编译安装。</p>
+<p>  ubuntu18.04中推荐使用gazebo9，ubuntu20.04中推荐使用gazebo11，安装流程如下：</p>
+<span id="more"></span>
+
+<h3 id="2-1-最简单的方式"><a href="#2-1-最简单的方式" class="headerlink" title="2.1 最简单的方式"></a>2.1 最简单的方式</h3><p>&emsp;&emsp;ubuntu18.04官方仓库中包含了gazebo9，可以直接使用</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gazebo9</span><br></pre></td></tr></table></figure>
+
+<p>来进行安装，但是，ubuntu官方仓库中只提供了gazebo9的版本，并且<strong>没有</strong>提供开发gazebo插件的开发工具，无法编译模型插件，因此如果有其他版本需求或者需要编译gazebo插件必须使用gazebo官方仓库。</p>
+<h3 id="2-2-使用gazebo官方的仓库"><a href="#2-2-使用gazebo官方的仓库" class="headerlink" title="2.2 使用gazebo官方的仓库"></a>2.2 使用gazebo官方的仓库</h3><p>&emsp;&emsp;首先添加gazebo官方的仓库</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo <span class="built_in">echo</span> <span class="string">&quot;deb http://packages.osrfoundation.org/gazebo/ubuntu-stable `lsb_release -cs` main&quot;</span> &gt; /etc/apt/sources.list.d/gazebo-stable.list</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;然后添加仓库公钥</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 短横线“-”用在某些程序的选项中表示标准输入/输出</span></span><br><span class="line">wget https://packages.osrfoundation.org/gazebo.key -O - | sudo apt-key add -</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;更新源</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt update</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;安装gazebo9</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install gazebo9</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;安装插件开发SDK</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo apt install libgazebo9-dev</span><br></pre></td></tr></table></figure>
+
+<blockquote>
+<p>官方教程见<a target="_blank" rel="noopener" href="http://gazebosim.org/tutorials?tut=install_ubuntu&amp;cat=install">http://gazebosim.org/tutorials?tut=install_ubuntu&amp;cat=install</a></p>
+</blockquote>
+<h2 id="3-基本概念"><a href="#3-基本概念" class="headerlink" title="3. 基本概念"></a>3. 基本概念</h2><h2 id="3-1-gazebo的基本架构"><a href="#3-1-gazebo的基本架构" class="headerlink" title="3.1 gazebo的基本架构"></a>3.1 gazebo的基本架构</h2><p>&emsp;&emsp;gazebo是一个前后端分离的架构，包括后端的gzserver和前端的gzclient，前后端通过tcp通信。gzserver负责对模拟的物理环境、物理对象的模拟和演算，gzclient用于渲染和显示模拟的场景，并为用户提供一些编辑和操作功能。</p>
+<p>&emsp;&emsp;使用<code>gzserver</code>来启动后端，使用<code>gzclient</code>来启动前端（GUI），可以使用<code>gz</code>来在命令行同后端进行交互控制，上述三个命令均可以通过添加<code>--verbose</code>选项来输出更多信息，方便再程序故障时查找错误。 此外，必须<strong>先启动后端</strong>，后端启动完成后前端才能正常启动。</p>
+<h3 id="3-2-sdf"><a href="#3-2-sdf" class="headerlink" title="3.2 sdf"></a>3.2 sdf</h3><p>  sdf是一种可以描述环境和物理模型的外形以及物理特性的文件。</p>
+<h3 id="3-3-world"><a href="#3-3-world" class="headerlink" title="3.3 world"></a>3.3 world</h3><p>&emsp;&emsp;world是测试场景，描述了测试环境的视觉和物理特性，可以包含多个model。</p>
+<h3 id="3-4-model"><a href="#3-4-model" class="headerlink" title="3.4 model"></a>3.4 model</h3><p>&emsp;&emsp;model机器人或者其他物体，描述了物体的视觉和物理特性，包含了link和joint。</p>
+<h3 id="3-5-link"><a href="#3-5-link" class="headerlink" title="3.5 link"></a>3.5 link</h3><p>&emsp;&emsp;link表示一个刚性的部件，不同的部件之间通过joint进行连接</p>
+<h3 id="3-6-joint"><a href="#3-6-joint" class="headerlink" title="3.6 joint"></a>3.6 joint</h3><p>&emsp;&emsp;joint用于连接两个link，连接的方式包括固定连接、单轴旋转连接和球连接（全向旋转）</p>
+<h3 id="3-7-plugin"><a href="#3-7-plugin" class="headerlink" title="3.7 plugin"></a>3.7 plugin</h3><p>&emsp;&emsp;plugin是对world或者model的各项属性进行编程控制以及为其增加功能的程序，其具体形式是动态链接库，在启动特定的world或者插入model时加载到gazebo中。</p>
+<h3 id="3-8-注意事项"><a href="#3-8-注意事项" class="headerlink" title="3.8 注意事项"></a>3.8 注意事项</h3><h4 id="3-8-1-网络问题导致的崩溃和无响应"><a href="#3-8-1-网络问题导致的崩溃和无响应" class="headerlink" title="3.8.1 网络问题导致的崩溃和无响应"></a>3.8.1 网络问题导致的崩溃和无响应</h4><p>&emsp;&emsp;gazebo和前后端有时需要访问许多官方提供的world和model（比如在某个world依赖了官方模型仓库中的模型时），而这些world和model都位于在线的服务器上，由于国内的网络情况这些服务器<strong>无法正常访问</strong>，并且gazebo本身没有良好的处理这些网络问题的机制，从而导致运行gazebo时经常会出现<strong>无响应</strong>的情况，导致程序崩溃甚至系统崩溃和死机（系统死机主要是gazebo性能开销比较大，在虚拟机里边跑起来有些吃力，gazebo程序故障时就会导致整个系统响应极慢）。另外，gazebo前端没有完善的检测后端运行情况的机制，因此在gazebo前端运行的过程中如果由于网络问题或者其他程序问题导致后端崩溃/退出/无响应后，前端并不会提示后端错误，而会在下次操作时也无响应。</p>
+<p>&emsp;&emsp;上述网络问题导致gazebo无响应的情况通常出现在启动时或者插入model时，这个问题可以通过在启动gazebo的时候<strong>关闭系统的网络连接</strong>来缓解，也可以通过将所有官方模型下载到本地来缓解。</p>
+<h3 id="3-8-2-本地模型和插件的加载路径"><a href="#3-8-2-本地模型和插件的加载路径" class="headerlink" title="3.8.2 本地模型和插件的加载路径"></a>3.8.2 本地模型和插件的加载路径</h3><p>&emsp;&emsp;gazebo通过一系列环境变量来寻找本地的模型和插件，正常设置这些环境变量才能让gazebo的前端和后端能够找到模型和插件正常工作。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 该变量保存查找pugin的目录，多个目录使用冒号（:）隔开</span></span><br><span class="line"><span class="built_in">export</span> GAZEBO_PLUGIN_PATH</span><br><span class="line"><span class="comment"># # 该变量保存查找model的目录，多个目录使用冒号（:）隔开</span></span><br><span class="line"><span class="built_in">export</span> GAZEBO_MODEL_PATH</span><br><span class="line"><span class="comment"># 下面这个不是gazebo的环境变量，是用于动态链接器使用的环境变量。需要将plugin的目录加入到这个环境变量中以便于动态链接器加载对应的动态链接库</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;由于gazebo的前端（gzclient）和后端（gzserver）可以分开启动，分开启动时，需要保证<strong>前后端都能访问</strong>到上述环境变量，否则可能出现前端不显示模型的问题。</p>
+<h2 id="4-使用gazebo进行无人机仿真"><a href="#4-使用gazebo进行无人机仿真" class="headerlink" title="4. 使用gazebo进行无人机仿真"></a>4. 使用gazebo进行无人机仿真</h2><h3 id="4-1-基本流程"><a href="#4-1-基本流程" class="headerlink" title="4.1 基本流程"></a>4.1 基本流程</h3><p>&emsp;&emsp;使用gazebo对无人机进行仿真的基本流程如下：</p>
+<ol>
+<li><p>首先需要建立world，即建立一个<strong>测试场景</strong>。</p>
+</li>
+<li><p>其次需要建立<strong>虚拟无人机模型（model）</strong>以及各种<strong>传感器和执行器（电机）的模型</strong>（model），并通过<strong>gazebo插件</strong>来实现这些模型的对应物理功能，以及外部软件与这些模型进行<strong>交互控制（通信）</strong>的方式。</p>
+</li>
+<li><p>最后需要一个<strong>飞行控制软件</strong>来对上述虚拟无人机的各个部件进行控制，让无人机能够平稳飞行。</p>
+</li>
+</ol>
+<h3 id="4-2-PX4简介"><a href="#4-2-PX4简介" class="headerlink" title="4.2 PX4简介"></a>4.2 PX4简介</h3><p>&emsp;&emsp; PX4是一个主流开源飞行控制软件，其提供了使用gazebo进行仿真模拟的支持，实现了用于gazebo的多种<strong>虚拟无人机模型</strong>（model），<strong>各种传感器和执行器的gazebo插件</strong>（plugin）以及<strong>测试场景</strong>（world）。</p>
+<h3 id="4-3-安装PX4"><a href="#4-3-安装PX4" class="headerlink" title="4.3 安装PX4"></a>4.3 安装PX4</h3><p>&emsp;&emsp;PX4是一个较为庞大的项目，其包含了很多个子项目，下面先介绍编译px4并在gazebo中仿真运行的步骤</p>
+<p>&emsp;&emsp;首先下载PX4项目源代码，最新的项目源代码全部下载共1.6G，非常大。由于国内网络环境问题，下载速度很慢</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">git <span class="built_in">clone</span> https://github.com/PX4/PX4-Autopilot.git --recursive</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;下载完成后进入源代码根目录中的<code>Tools/setup</code>，运行<code>ubuntu.sh</code>脚本安装编译PX4以及gazebo插件的<strong>依赖</strong>，该脚本有两个可选选项，<strong>不需要</strong>编译到硬件板子上运行时添加<code>--no-nuttx</code>（不会安装交叉编译器），<strong>不需要</strong>进行gazebo仿真运行时添加<code>--no-sim-tools</code>（不会安装gazebo以及仿真相关依赖）。我们这里仅进行仿真测试，所以添加<code>--no-nuttx</code>。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">./ubuntu.sh --no-nuttx</span><br></pre></td></tr></table></figure>
+
+<p><strong>PS: 没有特殊说明下文提到的路径均为相对源代码根目录的路径</strong></p>
+<blockquote>
+<p>PS: 该脚本会自动安装gazebo, 对于ubuntu18.04, 会自动安装gazebo9，队医ubunt20.04会自动安装gazebo11</p>
+</blockquote>
+<p>&emsp;&emsp;完成后进入<strong>源代码根目录</strong>, 执行下面命令进行编译，编译后会自动启动gazebo仿真运行环境</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">make px4_sitl gazebo</span><br></pre></td></tr></table></figure>
+
+<h3 id="4-4-仿真测试"><a href="#4-4-仿真测试" class="headerlink" title="4.4 仿真测试"></a>4.4 仿真测试</h3><h3 id="4-4-1-仿真测试系统基本结构"><a href="#4-4-1-仿真测试系统基本结构" class="headerlink" title="4.4.1 仿真测试系统基本结构"></a>4.4.1 仿真测试系统基本结构</h3><p>&emsp;&emsp;无人机仿真测试通常涉及到三个部分，虚拟无人机、飞控以及地面控制程序。使用<code>make px4_sitl gazebo</code>编译完成后会自动启动px4和gazebo进行仿真测试，此时仅会运行px4（飞控）和gazebo（虚拟无人机和虚拟环境），没有对应的地面控制程序。px4是飞行控制软件，gazebo插件和对应的虚拟无人机模型将在gazebo中运行，px4通过定义的接口和虚拟无人机gazebo插件进行通信控制无人机上的虚拟电机并接收无人机虚拟传感器数据，下面这个图片（来自官方文档）描述了通信关系。除了上述三个部分，还多了一个API/Offboard的部分，这部分应该是用于同ROS（机器人操作系统）进行交互的部分，通过这个接口可以通过ROS开发控制程序来控制虚拟无人机。</p>
+<p><img src="C:\Users\january\OneDrive\blog\materials\px4_sitl_overview.png"></p>
+<p>&emsp;&emsp;上述图片还描述了px4飞控中处理对应部分通信的主要源代码文件，例如和虚拟无人机进行交互控制的代码在<code>src/modules/simulator/simulator_mavlink.cpp</code>中，其中描述了读取传感器参数和控制虚拟电机的相关接口。</p>
+<h3 id="4-4-2-仿真测试各部件启动流程"><a href="#4-4-2-仿真测试各部件启动流程" class="headerlink" title="4.4.2 仿真测试各部件启动流程"></a>4.4.2 仿真测试各部件启动流程</h3><p>&emsp;&emsp;编译完成后可以随时进入源代码根目录，执行<code>make px4_sitl gazebo</code>命令来启动飞控和gazebo进行仿真。``make px4_sitl gazebo<code>命令主要通过</code>Tools/sitl_run.sh<code>这个脚本文件来完成px4和gazebo的启动，下面是仿照</code>sitl_run.sh`脚本进行手动启动各个部分的主要流程。</p>
+<p>&emsp;&emsp;首先设置gazebo仿真所需的model和plugin路径</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 使用上述流程编译后，plugin路径一般在build/px4_sitl_default/build_gazebo</span></span><br><span class="line"><span class="built_in">export</span> GAZEBO_PLUGIN_PATH=<span class="variable">$GAZEBO_PLUGIN_PATH</span>:/path/to/src/build/px4_sitl_default/build_gazebo</span><br><span class="line"><span class="comment"># 模型无需编译，其路径一般在Tools/sitl_gazebo/models</span></span><br><span class="line"><span class="built_in">export</span> GAZEBO_MODEL_PATH=<span class="variable">$GAZEBO_MODEL_PATH</span>:/path/to/src/Tools/sitl_gazebo/models</span><br><span class="line"><span class="comment"># 这里同plugin的路径一致</span></span><br><span class="line"><span class="built_in">export</span> LD_LIBRARY_PATH=<span class="variable">$LD_LIBRARY_PATH</span>:/path/to/src/build/px4_sitl_default/build_gazebo</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;然后启动gazebo后端<code>gzserver</code>，并指定world</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># px项目提供的world位于Tools/sitl_gazebo/worlds中，可以使用empty.world作为最简单的测试场景。</span></span><br><span class="line"><span class="comment"># 其他更复杂的world可能会依赖某些在线模型，由于网络问题导致无法gazebo正常运行，或者性能开销更大。</span></span><br><span class="line">gzserver /path/to/src/Tools/sitl_gazebo/worlds/emptry.world</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\january\OneDrive\blog\materials\QQ截图20201105224532.png" alt="QQ截图20201105224532"></p>
+<p>&emsp;&emsp;下一步使用<code>gz</code>命令向world中添加无人机</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># px项目提供的model位于Tools/sitl_gazebo/models,可以选择一种无人机</span></span><br><span class="line"><span class="comment"># spawn-file指定模型的sdf文件路径</span></span><br><span class="line">gz model --verbose --spawn-file=<span class="string">&quot;/path/to/src/Tools/sitl_gazebo/models/iris/iris.sdf&quot;</span> --model-name=iris -x 1.01 -y 0.98 -z 0.83</span><br></pre></td></tr></table></figure>
+
+<p><img src="C:\Users\january\OneDrive\blog\materials\QQ截图20201105224617.png" alt="QQ截图20201105224617"></p>
+<p>&emsp;&emsp;如果无人机模型（model）和插件（plugin）正常加载，此使使用<code>sudo netstat -tlpn | grep 4560</code>应该可以看到<code>gzserver</code>在监听tcp4560端口，如果没有输出，则表示模型或者插件加载错误，需要检查上述路径是否设置正常。</p>
+<p><img src="C:\Users\january\OneDrive\blog\materials\QQ截图20201105224647.png" alt="QQ截图20201105224647"></p>
+<p>&emsp;&emsp;接下来启动<code>gzclient</code>，确保<code>gzclient</code>能够访问的<code>gzserver</code>能够访问的包含模型和插件目录的环境变量<code>GAZEBO_PLUGIN_PATH</code>以及<code>GAZEBO_MODEL_PATH</code>。启动gzclient后，应该可以看到无人机模型。</p>
+<p>&emsp;&emsp;接着启动px4飞控, 启动飞控前，必须设置<code>PX4_SIM_MODEL</code>为当前仿真的无人机类型，否则px4无法启动。</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">export</span> PX4_SIM_MODEL=iris</span><br><span class="line"><span class="comment"># /path/to/src/build/px4_sitl_default/bin/px4为px4飞控程序，后面为参数，可以用--help参数px4的用法，一般按如下设置即可</span></span><br><span class="line">/path/to/src/build/px4_sitl_default/bin/px4为px4 /path/to/src/build/px4_sitl_default/etc -s etc/init.d-posix/rcS -t /path/to/src/test_data</span><br></pre></td></tr></table></figure>
+
+<p>&emsp;&emsp;飞控启动后，会输出一些自检数据，稍等一会后可以按下回车键，在命令行中输入<code>commander takeoff</code>进入takeoff来测试飞控是否成功连接。</p>
+<p><img src="C:\Users\january\OneDrive\blog\materials\QQ截图20201105224800.png" alt="QQ截图20201105224800"></p>
+<blockquote>
+<p>PS 无法直接在飞控的命令行中输入命令操作虚拟无人机进行各种动作，commander提供的命令行命令只能用于改变飞行模式</p>
+</blockquote>
+<p><img src="C:\Users\january\OneDrive\blog\materials\QQ截图20201105224942.png" alt="QQ截图20201105224942"></p>
+<p>&emsp;&emsp;上述过程就手动启动了px4飞控以及gazebo，接下来下载<strong>QGroundControl</strong>软件就可以连接px4飞控来控制虚拟无人机进行航行操作。下载QGroundControl后启动，QGroundControl会自动连接px4飞控，下图是运行测试。</p>
+<blockquote>
+<p>参见<a target="_blank" rel="noopener" href="http://qgroundcontrol.com/">http://qgroundcontrol.com/</a></p>
+</blockquote>
+<p><img src="C:\Users\january\OneDrive\blog\materials\gazebo_uav.png" alt="image-20201105223347942"></p>
+<h3 id="4-4-3-其他"><a href="#4-4-3-其他" class="headerlink" title="4.4.3 其他"></a>4.4.3 其他</h3><p>&emsp;&emsp;除了四轴无人机，px4项目还提供了其他种类无人机的gazebo仿真模型，如下表所示（表来自官网文档）。</p>
+<table>
+<thead>
+<tr>
+<th>Vehicle</th>
+<th>Command</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#quadrotor">Quadrotor</a></td>
+<td><code>make px4_sitl gazebo</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#quadrotor_optical_flow">Quadrotor with Optical Flow</a></td>
+<td><code>make px4_sitl gazebo_iris_opt_flow</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#3dr_solo">3DR Solo (Quadrotor)</a></td>
+<td><code>make px4_sitl gazebo_solo</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#typhoon_h480">Typhoon H480 (Hexrotor)</a> (supports video streaming)</td>
+<td><code>make px4_sitl gazebo_typhoon_h480</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#standard_plane">Standard Plane</a></td>
+<td><code>make px4_sitl gazebo_plane</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#standard_plane_catapult">Standard Plane (with catapult launch)</a></td>
+<td><code>make px4_sitl gazebo_plane_catapult</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#standard_vtol">Standard VTOL</a></td>
+<td><code>make px4_sitl gazebo_standard_vtol</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#tailsitter_vtol">Tailsitter VTOL</a></td>
+<td><code>make px4_sitl gazebo_tailsitter</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#ugv">Ackerman vehicle (UGV/Rover)</a></td>
+<td><code>make px4_sitl gazebo_rover</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#uuv">HippoCampus TUHH (UUV: Unmanned Underwater Vehicle)</a></td>
+<td><code>make px4_sitl gazebo_uuv_hippocampus</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#usv">Boat (USV: Unmanned Surface Vehicle)</a></td>
+<td><code>make px4_sitl gazebo_boat</code></td>
+</tr>
+<tr>
+<td><a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/gazebo_vehicles.html#airship">Cloudship (Airship)</a></td>
+<td><code>make px4_sitl gazebo_cloudship</code></td>
+</tr>
+</tbody></table>
+<blockquote>
+<p>参考 <a target="_blank" rel="noopener" href="https://dev.px4.io/master/en/simulation/">https://dev.px4.io/master/en/simulation/</a></p>
+</blockquote>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/Linux/%E5%AD%97%E7%AC%A6%E7%BB%88%E7%AB%AF%E6%8E%A7%E5%88%B6/" rel="prev" title="字符终端控制">
+                  <i class="fa fa-chevron-left"></i> 字符终端控制
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/rust/rust%E8%AF%AD%E8%A8%80%E8%A6%81%E7%82%B9/" rel="next" title="rust语言要点">
+                  rust语言要点 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

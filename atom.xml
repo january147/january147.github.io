@@ -1,0 +1,423 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>January&#39;s blog</title>
+  
+  
+  <link href="http://example.com/atom.xml" rel="self"/>
+  
+  <link href="http://example.com/"/>
+  <updated>2021-04-06T07:31:27.657Z</updated>
+  <id>http://example.com/</id>
+  
+  <author>
+    <name>January</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>h264_stream_structure</title>
+    <link href="http://example.com/2021/04/06/h264_stream_structure/"/>
+    <id>http://example.com/2021/04/06/h264_stream_structure/</id>
+    <published>2021-04-06T07:09:20.731Z</published>
+    <updated>2021-04-06T07:31:27.657Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="H-264视频编码格式"><a href="#H-264视频编码格式" class="headerlink" title="H.264视频编码格式"></a>H.264视频编码格式</h1><h2 id="1-H-264简介"><a href="#1-H-264简介" class="headerlink" title="1. H.264简介"></a>1. H.264简介</h2><p>&emsp;&emsp;H.264又称成为AVC（Advanced Video Codeing），是一种高效的视频编码方式。</p><h2 id="2-H-264视频码流的基本格式"><a href="#2-H-264视频码流的基本格式" class="headerlink" title="2. H.264视频码流的基本格式"></a>2. H.264视频码流的基本格式</h2><p>&emsp;&emsp;为了适应各种保存和网络传输方式，H.264视频码流被分为两个层次，底层为VCL（Video Coding Layer），其封装编码好的视频帧数据，顶层为NAL(Network Abstraction Layer)，其封装VCL的视频帧以及一些描述视频帧信息的元数据。</p><p><img src="materials/h264_layers.png" alt="h264_layers"></p><p>&emsp;&emsp;在NAL中，H.264码流由起始码（start code）和网络抽象层单元（NALU）组成。起始码为<code>00 00 00 01</code>或者<code>00 00 01</code>，其作用是分隔码流中的NALU，NALU中封装了视频帧和描述视频帧的元数据。</p><p><img src="materials/h264_stream.png" alt="h264_stream"></p><p>&emsp;&emsp;NALU由NALU头和载荷数据（Raw Byte Stream Payload）组成。</p><p><img src="materials/nalu.png" alt="nalu"></p><p>&emsp;&emsp;NALU头部占用1个字节，各字段的内容如下。</p><table><thead><tr><th>字段</th><th>描述</th><th>长度（bit）</th></tr></thead><tbody><tr><td>forbidden bit</td><td>表示该NALU是否错误, 一般情况均为0</td><td>1</td></tr><tr><td>nal_ref_idc</td><td>该字段<strong>似乎</strong>表示此NALU的数据是否被其他数据引用</td><td>2</td></tr><tr><td>nal_unit_type</td><td>表示该NALU的载荷类型</td><td>5</td></tr></tbody></table><p>&emsp;&emsp;根据H.264编码的标准文档，nal_ref_idc字段和nal_unit_type字段相关，根据我的理解，如果当前载荷数据会被其他数据引用的则nal_ref_idc的值需要大于0，否则其值等于0，因此也可以将nal_ref_idc字段的数值作为nalu的重要性来看。</p><p>&emsp;&emsp;下表为NALU的所有类型，这里先介绍下IDR帧，IDR(Instantaneous Decoding Refresh)帧是一种不依赖其他任何帧的可独立解码的帧，用于视频的随机访问以及避免视频流中的错误传播。在H.264中，I帧可能会依赖其之前的帧因此可能无法独立解码，因此并非所有I帧都是IDR帧，而IDR帧必为I帧。我们这里关注其中对解码至关重要的四种类型。nal_unit_type为<strong>1</strong>时表示载荷数据为<strong>非</strong>IDR的视频帧数据（VAL层的视频帧数据称为slice）;nal_unit_type为<strong>5</strong>时表示载荷数据为IDR视频帧数据；nal_unit_type为<strong>7</strong>时表示载荷数据为SPS（Sequence Parameter Set）；nal_unit_type为<strong>8</strong>时表示载荷数据为PPS(Picture Parameter Set)。这四种类型对于解码视频都十分重要，根据H.264编码的标准文档，其对应的nal_ref_idc值应均为非0值。</p><blockquote><p>NALU数据中的字节内的比特顺序为字节中的<strong>MSB</strong>(最高位/最左边的bit)作为第一个bit，<strong>LSB</strong>作为最后一个bit。</p></blockquote><p><img src="materials/nalu_type.png" alt="nalu_type"></p><h2 id="3-视频帧（slice）格式"><a href="#3-视频帧（slice）格式" class="headerlink" title="3. 视频帧（slice）格式"></a>3. 视频帧（slice）格式</h2><p>&emsp;&emsp;上一节介绍的NALU载荷类型中有两种视频帧载荷类型，分别为IDR帧和非IDR帧，这类视频帧（slice）数据也是有结构的，并且分为多种类型，其基本结构也是由header和数据构成，不过header的结构比较复杂，并且是变长的，下面是<strong>一小部分</strong>字段，我们这里只关注其中的slice_type字段。slice_type字段为slice_header中的第二个字段，其采用0阶指数哥伦布编码保存,其可以用于判断视频帧的类型。</p><p><img src="materials/nalu_slice_header.png" alt="slice_header"></p><p><img src="materials/slice_type.png" alt="slice_type"></p><h2 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4. 一个例子"></a>4. 一个例子</h2><p>&emsp;&emsp;下面是ffmpeg编码的一段h264视频码流, 我已经按照起始码分开了, 可以按照上文介绍的格式来读取一些信息。</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[00 00 00 01] 27 64 00 28 AC 2B 40 50 17 FC B0 80 00 00 03 00 80 00 00 1E 70 50 00 1E 84 80 00 2F AF 37 BD C0 3C 48 9A 80 </span><br><span class="line"></span><br><span class="line">[00 00 00 01] 28 EE 02 5C B0 </span><br><span class="line"></span><br><span class="line">[00 00 00 01] 25 88 80 4F C9 14 22 7F EE F9 B0 96 6B F4 9F 44 77 DB 5F E2 FD 65 D6 11 A9 B3 C2 B0 80 D0 07 F0 D8 09 10 F7 51 DA 15 01 B9 06 2B E9 EF A9 B0 AF 70 08 26 E4 0B D7 F6 BD E0 A3 F9 F5 D8 9B 00 AA 07 C1 29 71 5E 7F 09 22 5D D6 06 93 6B CA AC 83 AE 6F 72 29 B5 AA 4F E7 ED 44 E1 ...[数据太长，省略]</span><br><span class="line"></span><br><span class="line">[00 00 00 01] 21 9A 02 3F 96 F0 00 8A 71 C0 06 E3 32 02 B0 32 15 4C 40 89 46 B6 BD 1E 5A 03 E7 4C FA 9B 95 70 3B B6 A6 EF E6 5D CC 73 98 00 31 B8 AD 56 83 D5 5E D5 77 9D B0 69 C3 ...[数据太长，省略]</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure><p>&emsp;&emsp;第一个NAL的header为<code>0x27</code>, 二进制形式为<code>00100111</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为7，查表可知其为SPS。</p><p>&emsp;&emsp;第二个NAL的header为<code>0x28</code>, 二进制形式为<code>00101000</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为8，查表可知其为PPS。</p><p>&emsp;&emsp;第三个NAL的header为<code>0x25</code>, 二进制形式为<code>00100101</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为5，查表可知其为IDR slice。我们继续查看其slice header，由于slice header是变长的，其前8bit为<code>0x88</code>,二进制为<code>10001000</code>,按照指数哥伦布编码方式解码，得到slice_type字段值为7, 为查表可知为I slice。</p><p>&emsp;&emsp;第三个NAL的header为<code>0x21</code>, 二进制形式为<code>00100001</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为1，查表可知其为<strong>非</strong>IDR slice。我们继续查看其slice header，其前8bit为<code>0x9A</code>, 二进制为<code>10011010</code>,按照指数哥伦布编码方式解码，得到slice_type字段值为5, 为查表可知为P slice。</p><h2 id="5-一个简单的解析器-只读取nalu和slice的类型"><a href="#5-一个简单的解析器-只读取nalu和slice的类型" class="headerlink" title="5. 一个简单的解析器(只读取nalu和slice的类型)"></a>5. 一个简单的解析器(只读取nalu和slice的类型)</h2><blockquote><p><a href="https://gitee.com/JanuaryJIAN/codes/91dz36eacqsux7h0ty28r90#0-qzone-1-24479-d020d2d2a4e8d1a374a433f596ad1440">https://gitee.com/JanuaryJIAN/codes/91dz36eacqsux7h0ty28r90#0-qzone-1-24479-d020d2d2a4e8d1a374a433f596ad1440</a></p></blockquote><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a href="https://www.itu.int/rec/T-REC-H.264">https://www.itu.int/rec/T-REC-H.264</a></p>]]></content>
+    
+    
+    <summary type="html">H.264</summary>
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux内核密码学API</title>
+    <link href="http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E5%AF%86%E7%A0%81%E5%AD%A6API/"/>
+    <id>http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E5%AF%86%E7%A0%81%E5%AD%A6API/</id>
+    <published>2021-04-06T07:09:20.715Z</published>
+    <updated>2020-10-02T03:23:16.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux内核密码学API–对称密码"><a href="#Linux内核密码学API–对称密码" class="headerlink" title="Linux内核密码学API–对称密码"></a>Linux内核密码学API–对称密码</h1><p>&emsp;&emsp;当我们做Linux内核或者内核模块开发需要使用密码算法时，通常使用Linux内核集成的密码学套件是比较方便的。常用的密码学算法可以分为三类：对称密码算法，非对称密码算法和消息摘要（单向哈希）算法，这篇博客将主要介绍如何使用Linux内核的对称密码算法API。</p><h2 id="1-头文件"><a href="#1-头文件" class="headerlink" title="1. 头文件"></a>1. 头文件</h2><p>&emsp;&emsp;使用Linux内核的对称密码API时，需要以下头文件</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 包含对称密码（symmetric key）算法API（该文件内部包含了linux/crypto.h所以无需再次引入linux/crypto.h）</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;crypto/skcipher.h&gt;</span> </span></span><br><span class="line"><span class="comment">// 对称密码API需要使用的struct scatterlist结构（用来保存输入/输出缓冲区）</span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/scatterlist.h&gt;</span> </span></span><br></pre></td></tr></table></figure><h2 id="2-需要使用的重要函数-数据结构"><a href="#2-需要使用的重要函数-数据结构" class="headerlink" title="2. 需要使用的重要函数/数据结构"></a>2. 需要使用的重要函数/数据结构</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 用来保存加/解密缓冲区的结构</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">scatterlist</span> <span class="title">sg</span>;</span></span><br><span class="line"><span class="comment">// 加密算法对象（上下文）</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">crypto_skcipher</span> *<span class="title">tfm</span>;</span></span><br><span class="line"><span class="comment">// 异步操作请求对象</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">skcipher_request</span> *<span class="title">req</span>;</span></span><br><span class="line"><span class="comment">// 异步操作等待对象</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">crypto_wait</span> <span class="title">wait</span>;</span></span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 该函数用于等待异步加密操作完成，通常需要将crypto_skcipher_decrypt的返回值作为err参数传入</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">crypto_wait_req</span><span class="params">(<span class="keyword">int</span> err, struct crypto_wait *wait)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 该函数作为异步加密操作的回调函数传入req对象中，在加密完成后被调用</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">crypto_req_done</span><span class="params">(struct crypto_async_request *req, <span class="keyword">int</span> err)</span></span>;</span><br><span class="line"></span><br><span class="line"></span><br><span class="line"><span class="comment">// 该函数根据密码算法名称分配密码算法对象，内核支持的密码算法可以在/proc/crypto文件中查看</span></span><br><span class="line"><span class="function">struct crypto_skcipher *<span class="title">crypto_alloc_skcipher</span><span class="params">(<span class="keyword">const</span> <span class="keyword">char</span> *alg_name,</span></span></span><br><span class="line"><span class="function"><span class="params">      u32 type, u32 mask)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="function">struct skcipher_request *<span class="title">skcipher_request_alloc</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">                    struct crypto_skcipher *tfm, <span class="keyword">gfp_t</span> gfp)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// init function</span></span><br><span class="line"><span class="comment">// 初始化scatterlist时需要使用kmalloc分配的内存，如果使用vmalloc分配的内存会导致内存页分配错误，目前还不知道具体原因</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">sg_init_one</span><span class="params">(struct scatterlist *sg,</span></span></span><br><span class="line"><span class="function"><span class="params">    <span class="keyword">const</span> <span class="keyword">void</span> *buf, <span class="keyword">unsigned</span> <span class="keyword">int</span> buflen)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置异步调用的回调函数，这里data是一个自定数据结构，其会被传给回调函数。</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">skcipher_request_set_callback</span><span class="params">(struct skcipher_request *req,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    u32 flags,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">crypto_completion_t</span> <span class="keyword">compl</span>,</span></span></span><br><span class="line"><span class="function"><span class="params">                                    <span class="keyword">void</span> *data)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 内核的对称加密API可以“原地”加密，即加解密共用相同的缓冲区，因此这里的src和dst可以设置为同一个</span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">skcipher_request_set_crypt</span><span class="params">(</span></span></span><br><span class="line"><span class="function"><span class="params">struct skcipher_request *req,</span></span></span><br><span class="line"><span class="function"><span class="params">struct scatterlist *src, struct scatterlist *dst,</span></span></span><br><span class="line"><span class="function"><span class="params"><span class="keyword">unsigned</span> <span class="keyword">int</span> cryptlen, <span class="keyword">void</span> *iv)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 设置密钥和密钥长度，密码长度单位为字节</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">crypto_skcipher_setkey</span><span class="params">(struct crypto_skcipher *tfm,</span></span></span><br><span class="line"><span class="function"><span class="params"> <span class="keyword">const</span> u8 *key, <span class="keyword">unsigned</span> <span class="keyword">int</span> keylen)</span></span>;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 解密，将返回值传入crypto_wait_req函数来等待可能的异步操作完成</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">crypto_skcipher_decrypt</span><span class="params">(struct skcipher_request *req)</span></span>;</span><br><span class="line"><span class="comment">// 加密</span></span><br><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">crypto_skcipher_encrypt</span><span class="params">(struct skcipher_request *req)</span></span></span><br><span class="line"><span class="function"></span></span><br><span class="line"><span class="function"><span class="comment">// 释放资源</span></span></span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">crypto_free_skcipher</span><span class="params">(struct crypto_skcipher *tfm)</span></span>;</span><br><span class="line"><span class="function"><span class="keyword">void</span> <span class="title">skcipher_request_free</span><span class="params">(struct skcipher_request *req)</span></span>;</span><br></pre></td></tr></table></figure><h2 id="3-基本流程"><a href="#3-基本流程" class="headerlink" title="3. 基本流程"></a>3. 基本流程</h2><p>&emsp;&emsp;对称密码算法的加/解密流程同上一节给出的API函数顺序相同，可以分为4个大的步骤。</p><ol><li>获取密码算法对象和异步操作请求对象</li><li>初始化这些对象，设置所需参数，即给scatterlist设置缓冲区，给异步请求对象设置回调函数/初始化向量等，给密码算法对象设置密钥</li><li>执行加/解密操作</li><li>释放动态分配的资源</li></ol><h2 id="4-示例"><a href="#4-示例" class="headerlink" title="4. 示例"></a>4. 示例</h2><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">int</span> <span class="title">linux_kernel_crypto_decrypt</span><span class="params">(<span class="keyword">void</span>* data_in_out, <span class="keyword">int</span> data_len, <span class="keyword">void</span>* key, <span class="keyword">int</span> key_len, <span class="keyword">void</span>* iv, <span class="keyword">int</span> iv_len)</span> </span>&#123;</span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">crypto_skcipher</span>* <span class="title">cipher</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">skcipher_request</span>* <span class="title">req</span>;</span></span><br><span class="line">    <span class="class"><span class="keyword">struct</span> <span class="title">crypto_wait</span> <span class="title">wait</span>;</span></span><br><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">scatterlist</span> <span class="title">sg</span>;</span></span><br><span class="line">    <span class="keyword">size_t</span> block_size;</span><br><span class="line"><span class="keyword">int</span> ret;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配算法对象，支持的算法可以在/proc/crypto文件中查看</span></span><br><span class="line">cipher = crypto_alloc_skcipher(<span class="string">&quot;cbc(aes)&quot;</span>, <span class="number">0</span>, <span class="number">0</span>);</span><br><span class="line"><span class="keyword">if</span> (IS_ERR(cipher)) &#123;</span><br><span class="line">printk(<span class="string">&quot;fail to allocate cipher\n&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// skcipher api不支持填充，所以加/解密数据需要为加密块的整数倍</span></span><br><span class="line">    block_size = crypto_skcipher_blocksize(cipher);</span><br><span class="line">    <span class="keyword">if</span> (data_len % block_size != <span class="number">0</span>) &#123;</span><br><span class="line">printk(<span class="string">&quot;data len not aligned&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 分配req对象</span></span><br><span class="line">req = skcipher_request_alloc(cipher, GFP_KERNEL);</span><br><span class="line"><span class="keyword">if</span> (IS_ERR(req)) &#123;</span><br><span class="line">printk(<span class="string">&quot;fail to allocate req\n&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">&#125;</span><br><span class="line">sg_init_one(&amp;sg, data_in_out, data_len);</span><br><span class="line">skcipher_request_set_callback(req, CRYPTO_TFM_REQ_MAY_BACKLOG, crypto_req_done, &amp;wait);</span><br><span class="line">skcipher_request_set_crypt(req, &amp;sg, &amp;sg, data_len, iv);</span><br><span class="line">ret = crypto_skcipher_setkey(cipher, key, key_len);</span><br><span class="line">    <span class="keyword">if</span> ( <span class="number">0</span> != ret) &#123;</span><br><span class="line">        printk(<span class="string">&quot;fail to set key, error %d\n&quot;</span>, ret);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 执行解密操作</span></span><br><span class="line">ret = crypto_wait_req(crypto_skcipher_decrypt(req), &amp;wait); </span><br><span class="line"><span class="keyword">if</span> (<span class="number">0</span> != ret) &#123;</span><br><span class="line">        printk(<span class="string">&quot;decryption error %d\n&quot;</span>, ret);</span><br><span class="line">        <span class="keyword">return</span> <span class="number">-1</span>；</span><br><span class="line">&#125;</span><br><span class="line"><span class="comment">// 释放资源</span></span><br><span class="line">crypto_free_skcipher(cipher);</span><br><span class="line">skcipher_request_free(req);</span><br><span class="line">printk(<span class="string">&quot;decryption finished&quot;</span>);</span><br><span class="line"><span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Linux内核密码学API–对称密码&quot;&gt;&lt;a href=&quot;#Linux内核密码学API–对称密码&quot; class=&quot;headerlink&quot; title=&quot;Linux内核密码学API–对称密码&quot;&gt;&lt;/a&gt;Linux内核密码学API–对称密码&lt;/h1&gt;&lt;p&gt;&amp;emsp;</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>专业英语词汇</title>
+    <link href="http://example.com/2021/04/06/%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD%E8%AF%8D%E6%B1%87/"/>
+    <id>http://example.com/2021/04/06/%E4%B8%93%E4%B8%9A%E8%8B%B1%E8%AF%AD%E8%AF%8D%E6%B1%87/</id>
+    <published>2021-04-06T07:09:20.715Z</published>
+    <updated>2020-12-21T13:05:26.449Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="专业英语词汇"><a href="#专业英语词汇" class="headerlink" title="专业英语词汇"></a>专业英语词汇</h1><h2 id="Math"><a href="#Math" class="headerlink" title="Math"></a>Math</h2><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody><tr><td>余数</td><td>remainder</td></tr><tr><td>最大公因数</td><td>greatest common factor / greatest common divisor(gcd)</td></tr><tr><td>最小公倍数</td><td>least common multiple(lcm)</td></tr><tr><td>互质</td><td>co-prime</td></tr><tr><td>质数</td><td>prime</td></tr><tr><td>合数</td><td>composite</td></tr><tr><td>不完全商</td><td>incomplete quotient</td></tr><tr><td>分子</td><td>numerator</td></tr><tr><td>分母</td><td>denominator</td></tr><tr><td>取模运算</td><td>modulo operation</td></tr><tr><td>模，取模</td><td>modulo</td></tr><tr><td>二次剩余</td><td>quadratic residue</td></tr><tr><td>因数</td><td>divisor / factor</td></tr><tr><td>整除</td><td>exact division</td></tr><tr><td>勒让德符号</td><td>Legendre symbol</td></tr><tr><td>同余</td><td>modular congruence / congruence modulo</td></tr><tr><td>化简</td><td>reduce</td></tr><tr><td>分解因数</td><td>factorization</td></tr><tr><td>乘积</td><td>product</td></tr><tr><td>倍数</td><td>multiple</td></tr><tr><td>同态</td><td>homomorphism</td></tr><tr><td>同构</td><td>isomorphism</td></tr><tr><td>商群</td><td>quotient group / factor group</td></tr><tr><td>定义域</td><td>domain</td></tr><tr><td>值域</td><td>codomain</td></tr><tr><td>集合</td><td>set</td></tr><tr><td>陪集</td><td>coset</td></tr><tr><td>单射</td><td>injective function</td></tr><tr><td>满射</td><td>surjective function</td></tr><tr><td>双射</td><td>bijective function</td></tr><tr><td>方差</td><td>variance</td></tr><tr><td>分布函数</td><td>Cumulative distribution function(CDF) / distribution function</td></tr><tr><td>伪随机</td><td>pseudorandom</td></tr><tr><td>超奇异曲线</td><td>supersingular curve</td></tr><tr><td>自同态</td><td>endomorphism</td></tr><tr><td>分圆多项式</td><td>cyclotomic polynominal</td></tr><tr><td>代数（学）的</td><td>algebraic</td></tr><tr><td>平方的，二次方的</td><td>quadratic</td></tr></tbody></table><h2 id="computer-system"><a href="#computer-system" class="headerlink" title="computer system"></a>computer system</h2><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody><tr><td>页面调度/换页</td><td>paging</td></tr><tr><td>抖动</td><td>thrashing</td></tr><tr><td>局部性</td><td>locality</td></tr></tbody></table><h2 id="compiler"><a href="#compiler" class="headerlink" title="compiler"></a>compiler</h2><table><thead><tr><th>中文</th><th>英文</th></tr></thead><tbody><tr><td>位置无关代码</td><td>PIC (Position-Independent Code)</td></tr><tr><td>全局偏移表</td><td>GOT (Global Offset Table)</td></tr><tr><td>过程链接表</td><td>Procedure Linkage Table</td></tr></tbody></table><h2 id="cloud-service"><a href="#cloud-service" class="headerlink" title="cloud service"></a>cloud service</h2><h3 id="Server-consolidation"><a href="#Server-consolidation" class="headerlink" title="Server consolidation"></a>Server consolidation</h3><p>Server consolidation refers to the use of a physical server to accommodate one or more server applications or user instances. Server consolidation makes it possible to share a server’s compute resources among multiple applications and services simultaneously. It is mainly used to reduce the number of servers required in an organization.</p><h3 id="Colocation-facilitiy"><a href="#Colocation-facilitiy" class="headerlink" title="Colocation facilitiy"></a>Colocation facilitiy</h3><p>Colocation facilities work as a type of data center that rents equipment space and bandwidth to companies and businesses that need a network service provider at a reasonable cost.</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;专业英语词汇&quot;&gt;&lt;a href=&quot;#专业英语词汇&quot; class=&quot;headerlink&quot; title=&quot;专业英语词汇&quot;&gt;&lt;/a&gt;专业英语词汇&lt;/h1&gt;&lt;h2 id=&quot;Math&quot;&gt;&lt;a href=&quot;#Math&quot; class=&quot;headerlink&quot; title=&quot;M</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux内核模块开发</title>
+    <link href="http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/"/>
+    <id>http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E6%A8%A1%E5%9D%97%E5%BC%80%E5%8F%91/</id>
+    <published>2021-04-06T07:09:20.699Z</published>
+    <updated>2020-10-17T12:44:43.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux内核模块开发"><a href="#Linux内核模块开发" class="headerlink" title="Linux内核模块开发"></a>Linux内核模块开发</h1><h2 id="1-源代码文件结构"><a href="#1-源代码文件结构" class="headerlink" title="1. 源代码文件结构"></a>1. 源代码文件结构</h2><p>&emsp;&emsp;下面是一个最基本的内核模块源代码结构，任何模块项目都需要包含这些内容</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span></span></span><br><span class="line"></span><br><span class="line"><span class="comment">/*模块初始化函数*/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">int</span> <span class="title">module_init_func</span><span class="params">(<span class="keyword">void</span>)</span> </span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line">    <span class="keyword">return</span> <span class="number">0</span>;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">/*模块卸载函数*/</span></span><br><span class="line"><span class="function"><span class="keyword">static</span> <span class="keyword">void</span> <span class="title">module_exit_func</span><span class="params">(<span class="keyword">void</span>)</span></span></span><br><span class="line"><span class="function"></span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">module_init(module_init_func);</span><br><span class="line">module_exit(module_exit_func);</span><br><span class="line">MODULE_LICENSE(<span class="string">&quot;GPL&quot;</span>);</span><br></pre></td></tr></table></figure><h2 id="2-常用的头文件"><a href="#2-常用的头文件" class="headerlink" title="2. 常用的头文件"></a>2. 常用的头文件</h2><p>&emsp;&emsp;开发内核模块通常会用到以下头文件</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/module.h&gt;</span> <span class="comment">// 内核模块相关操作，如模块注册，卸载等等</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kernel.h&gt;</span> <span class="comment">// 内核输入输出等功能函数</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/fs.h&gt;</span> <span class="comment">// 虚拟文件系统相关操作，如打开文件，关闭文件等等</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/mm.h&gt;</span> <span class="comment">// 内存映射相关操作</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/slab.h&gt;</span> <span class="comment">// 内核动态分配,kmalloc/kfree等</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/vmalloc.h&gt;</span> <span class="comment">// 内核动态分配, vmalloc/vfree等</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/mman.h&gt;</span> <span class="comment">// 内存映射相关操作</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/kallsyms.h&gt;</span> <span class="comment">// 查找内核符号表的相关函数 kallsyms_lookup_name</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/uaccess.h&gt;</span> <span class="comment">// 操作用户空间内存的相关函数</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/err.h&gt;</span><span class="comment">// 处理Linux错误码的相关函数</span></span></span><br><span class="line"><span class="meta">#<span class="meta-keyword">include</span> <span class="meta-string">&lt;linux/types.h&gt;</span> <span class="comment">// Linux常用的基本数据类型定义，如uint8_t，size_t等等</span></span></span><br></pre></td></tr></table></figure><h2 id="3-编译单个源代码文件的内核模块"><a href="#3-编译单个源代码文件的内核模块" class="headerlink" title="3. 编译单个源代码文件的内核模块"></a>3. 编译单个源代码文件的内核模块</h2><p>&emsp;&emsp;最基本的用于编译一个内核模块的Makefile如下</p><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里设置模块名称，模块名称为源代码文件名去掉后缀名</span></span><br><span class="line">MODULE_NAME := module_name</span><br><span class="line"></span><br><span class="line"><span class="comment"># 内核构建系统会根据传递给其的M变量来找到这个Makefile文件并将其include，通过检查KERNELRELEASE变量，可以将传递给内核构建系统的内容和本Makefile单独的操作分开以避免相互影响</span></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(KERNELRELEASE)</span>,)</span><br><span class="line"></span><br><span class="line"><span class="comment"># 此内容传递给内核构建系统，因此只向内核构建系统传递其必须的变量（即obj-m），避免污染内核构建系统中的其他变量</span></span><br><span class="line">obj-m := <span class="variable">$(MODULE_NAME)</span>.o</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"><span class="comment"># 下面的内容不需要被内核构建系统使用</span></span><br><span class="line"><span class="comment"># 通过ccflags-y变量可以增加编译时的编译参数</span></span><br><span class="line">ccflags-y := </span><br><span class="line"></span><br><span class="line"><span class="comment"># 注意这里传递给内核构建系统的M变量，内核构建系统将在M变量保存的目录中搜索Makefile文件，并将其include</span></span><br><span class="line"><span class="section">all:</span></span><br><span class="line"><span class="variable">$(MAKE)</span> -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(<span class="built_in">shell</span> pwd)</span> ccflags-y=$(ccflags-y) modules</span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line"><span class="variable">$(MAKE)</span> -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(<span class="built_in">shell</span> pwd)</span> clean</span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure><h2 id="4-编译多个源代码文件的内核模块"><a href="#4-编译多个源代码文件的内核模块" class="headerlink" title="4. 编译多个源代码文件的内核模块"></a>4. 编译多个源代码文件的内核模块</h2><p>&emsp;&emsp;如果要编译的内核模块包括了多个源代码，需要对Makefile进行一些调整</p><figure class="highlight makefile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># 这里设置模块名称（不需要为源代码名称）</span></span><br><span class="line">MODULE_NAME := module_name</span><br><span class="line"></span><br><span class="line"><span class="keyword">ifneq</span> (<span class="variable">$(KERNELRELEASE)</span>,)</span><br><span class="line"></span><br><span class="line">obj-m := <span class="variable">$(MODULE_NAME)</span>.o</span><br><span class="line"><span class="comment"># 这里写源代码列表，需要将后缀名.c改为.o，以空格分隔</span></span><br><span class="line"><span class="variable">$(MODULE_NAME)</span>-objs := sourcecode1.o sourcecode2.o</span><br><span class="line"></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line"></span><br><span class="line"><span class="comment"># 添加额外的编译选项</span></span><br><span class="line">ccflags-y := </span><br><span class="line"><span class="section">all:</span></span><br><span class="line"><span class="variable">$(MAKE)</span> -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(<span class="built_in">shell</span> pwd)</span> ccflags-y=$(ccflags-y) modules</span><br><span class="line"></span><br><span class="line"><span class="section">clean:</span></span><br><span class="line"><span class="variable">$(MAKE)</span> -C /lib/modules/<span class="variable">$(<span class="built_in">shell</span> uname -r)</span>/build M=<span class="variable">$(<span class="built_in">shell</span> pwd)</span> clean</span><br><span class="line"></span><br><span class="line"><span class="keyword">endif</span></span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Linux内核模块开发&quot;&gt;&lt;a href=&quot;#Linux内核模块开发&quot; class=&quot;headerlink&quot; title=&quot;Linux内核模块开发&quot;&gt;&lt;/a&gt;Linux内核模块开发&lt;/h1&gt;&lt;h2 id=&quot;1-源代码文件结构&quot;&gt;&lt;a href=&quot;#1-源代码文件结</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>oops!荣耀路由器有线局域网无法正常连接</title>
+    <link href="http://example.com/2021/04/06/oops!%E8%8D%A3%E8%80%80%E8%B7%AF%E7%94%B1%E5%99%A8%E6%9C%89%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E8%BF%9E%E6%8E%A5/"/>
+    <id>http://example.com/2021/04/06/oops!%E8%8D%A3%E8%80%80%E8%B7%AF%E7%94%B1%E5%99%A8%E6%9C%89%E7%BA%BF%E5%B1%80%E5%9F%9F%E7%BD%91%E6%97%A0%E6%B3%95%E6%AD%A3%E5%B8%B8%E8%BF%9E%E6%8E%A5/</id>
+    <published>2021-04-06T07:09:20.684Z</published>
+    <updated>2020-09-25T14:33:01.212Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="oops-荣耀路由器有线局域网无法正常连接"><a href="#oops-荣耀路由器有线局域网无法正常连接" class="headerlink" title="oops!荣耀路由器有线局域网无法正常连接"></a>oops!荣耀路由器有线局域网无法正常连接</h1><p>&emsp;&emsp;最近在做嵌入式Linux网络通信方面的工作，用了荣耀路由器来连接电脑与树莓派进行通信，树莓派使用有线网连接到路由器，而电脑使用无线网连接到路由器。然而最近重置了一次路由器后，电脑和树莓派之间无法正常进行网络通信了。本博客记录了该问题的修复过程。</p><h2 id="1-问题表现"><a href="#1-问题表现" class="headerlink" title="1. 问题表现"></a>1. 问题表现</h2><p>本次问题是我在树莓派上测试运行一个使用udp通信的程序时发现的，测试中电脑和树莓派都使用的是静态ip，路由器<strong>没有连接WAN</strong>。基本问题如下：</p><ol><li>使用udp通信时，sendto调用会周期性的被阻塞数秒。</li><li>电脑端无法收到任何数据</li></ol><p>使用ping测试的结果如下：</p><ol><li>电脑可以ping到连接到路由器的局域网中的其他设备（其他设备均通过无线连接），然而无法ping到树莓派，树莓派只能够ping到路由器，无法ping到局域网中的任何设备。</li></ol><p>在电脑上使用wireshark抓包结果如下：</p><ol><li><p>莓派发送的所有数据包都没有被电脑收到</p></li><li><p>电脑给树莓派发送许多arp请求包，然而所有发送到树莓派的arp请求包都没有收到回复</p></li></ol><p>由于抓包显示树莓派没有应答arp请求包，所以查看电脑和树莓派arp缓存表（linux系统，使用<code>arp</code>命令查看），结果如下：</p><ol><li><p>查看电脑的arp表中没有树莓派的mac地址</p></li><li><p>查看树莓派的arp表中只有路由器的mac地址，其他ip对应的mac地址为空</p></li></ol><h2 id="2-问题原因"><a href="#2-问题原因" class="headerlink" title="2. 问题原因"></a>2. 问题原因</h2><p>&emsp;&emsp;从上述表现来看，树莓派没有获取到电脑的mac地址，电脑也没有获取到树莓派的mac地址，因此网卡肯定不知道如何发送数据，从而导致了udp缓冲区耗尽使用sendto调用的阻塞，当数据包超时后，udp会丢弃一些数据包，然后sendto又可以被调用，从而造成了间歇性阻塞以及数据包发送失败。</p><p>&emsp;&emsp;我初步判断树莓派的arp服务存在问题，因为我的树莓派仅仅使用了Linux内核和busybox，没有做完整的用户空间初始化 ，然而，经过搜索我发现arp服务是由Linux内核IP协议栈处理的，因此并不是这个原因。</p><p>​        因为所有无线连接的设备都可以通信，我估计可能是路由器把有线和无线局域网隔离了。然而登录到路由器后，我发现路由器<strong>根本没有识别到有线端口的连接</strong>。不过，树莓派是可以ping到路由器的，这表示树莓派和路由器确实联通了，因此这个问题很令人困惑。我在路由器设置里找了许久，突然发现有个在所有端口自动识别WAN的选项，感觉很可能就是这个的原因。我的路由器没有接WAN，因此接入的树莓派的端口很可能处于检测WAN的状态，因此无法与内部局域网连接。我将选项设置为固定WAN接口后树莓派和电脑就能够互相ping到了。</p><h2 id="3-问题解决"><a href="#3-问题解决" class="headerlink" title="3. 问题解决"></a>3. 问题解决</h2><p>关闭荣耀路由器自动识别WAN端口，把需要连接局域网的设备连接到路由器的非WAN端口上。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;oops-荣耀路由器有线局域网无法正常连接&quot;&gt;&lt;a href=&quot;#oops-荣耀路由器有线局域网无法正常连接&quot; class=&quot;headerlink&quot; title=&quot;oops!荣耀路由器有线局域网无法正常连接&quot;&gt;&lt;/a&gt;oops!荣耀路由器有线局域网无法正常连接&lt;/</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux口令加密格式</title>
+    <link href="http://example.com/2021/04/06/Linux%E5%8F%A3%E4%BB%A4%E5%8A%A0%E5%AF%86%E6%A0%BC%E5%BC%8F/"/>
+    <id>http://example.com/2021/04/06/Linux%E5%8F%A3%E4%BB%A4%E5%8A%A0%E5%AF%86%E6%A0%BC%E5%BC%8F/</id>
+    <published>2021-04-06T07:09:20.668Z</published>
+    <updated>2020-10-14T02:09:21.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux口令加密"><a href="#Linux口令加密" class="headerlink" title="Linux口令加密"></a>Linux口令加密</h1><h2 id="约定"><a href="#约定" class="headerlink" title="约定"></a>约定</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;name&gt;</span><br></pre></td></tr></table></figure><p>使用尖括号包围的内容为参数名称，在具体使用时使用对应的值替换</p><h2 id="基础的加密格式"><a href="#基础的加密格式" class="headerlink" title="基础的加密格式"></a>基础的加密格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;salt&gt;&lt;cipher&gt;</span><br></pre></td></tr></table></figure><p>口令密文的开头两个字符为salt，后边为加密（单向加密）后的密文</p><h2 id="扩展的加密的格式"><a href="#扩展的加密的格式" class="headerlink" title="扩展的加密的格式"></a>扩展的加密的格式</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$&lt;type&gt;$&lt;salt&gt;$&lt;cipher&gt;</span><br></pre></td></tr></table></figure><p>type表示了使用算法类型，之后为salt，最后是加密后的密文</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">Features in glibc</span><br><span class="line">      The glibc version of this function supports additional encryption</span><br><span class="line">      algorithms.</span><br><span class="line"></span><br><span class="line">      If salt is a character string starting with the characters &quot;$id$&quot;</span><br><span class="line">      followed by a string optionally terminated by &quot;$&quot;, then the result</span><br><span class="line">      has the form:</span><br><span class="line"></span><br><span class="line">             $id$salt$encrypted</span><br><span class="line"></span><br><span class="line">      id identifies the encryption method used instead of DES and this then</span><br><span class="line">      determines how the rest of the password string is interpreted.  The</span><br><span class="line">      following values of id are supported:</span><br><span class="line"></span><br><span class="line">             ID  | Method</span><br><span class="line">             ─────────────────────────────────────────────────────────</span><br><span class="line">             1   | MD5</span><br><span class="line">             2a  | Blowfish (not in mainline glibc; added in some</span><br><span class="line">                 | Linux distributions)</span><br><span class="line">             5   | SHA-256 (since glibc 2.7)</span><br><span class="line">             6   | SHA-512 (since glibc 2.7)</span><br><span class="line"></span><br><span class="line">      Thus, $5$salt$encrypted and $6$salt$encrypted contain the password</span><br><span class="line">      encrypted with, respectively, functions based on SHA-256 and SHA-512.</span><br><span class="line"></span><br><span class="line">      &quot;salt&quot; stands for the up to 16 characters following &quot;$id$&quot; in the</span><br><span class="line">      salt.  The &quot;encrypted&quot; part of the password string is the actual</span><br><span class="line">      computed password.  The size of this string is fixed:</span><br><span class="line"></span><br><span class="line">      MD5     | 22 characters</span><br><span class="line">      SHA-256 | 43 characters</span><br><span class="line">      SHA-512 | 86 characters</span><br><span class="line"></span><br><span class="line">      The characters in &quot;salt&quot; and &quot;encrypted&quot; are drawn from the set</span><br><span class="line">      [a-zA-Z0-9.&#x2F;].  In the MD5 and SHA implementations the entire key is</span><br><span class="line">      significant (instead of only the first 8 bytes in DES).</span><br><span class="line"></span><br><span class="line">      Since glibc 2.7, the SHA-256 and SHA-512 implementations support a</span><br><span class="line">      user-supplied number of hashing rounds, defaulting to 5000.  If the</span><br><span class="line">      &quot;$id$&quot; characters in the salt are followed by &quot;rounds&#x3D;xxx$&quot;, where</span><br><span class="line">      xxx is an integer, then the result has the form</span><br><span class="line"></span><br><span class="line">             $id$rounds&#x3D;yyy$salt$encrypted</span><br><span class="line"></span><br><span class="line">      where yyy is the number of hashing rounds actually used.  The number</span><br><span class="line">      of rounds actually used is 1000 if xxx is less than 1000, 999999999</span><br><span class="line">      if xxx is greater than 999999999, and is equal to xxx otherwise.</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Linux口令加密&quot;&gt;&lt;a href=&quot;#Linux口令加密&quot; class=&quot;headerlink&quot; title=&quot;Linux口令加密&quot;&gt;&lt;/a&gt;Linux口令加密&lt;/h1&gt;&lt;h2 id=&quot;约定&quot;&gt;&lt;a href=&quot;#约定&quot; class=&quot;headerlink&quot; </summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>oops!ARM Linux运行速度异常变慢</title>
+    <link href="http://example.com/2021/04/06/oops!ARM%20Linux%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6%E5%BC%82%E5%B8%B8%E5%8F%98%E6%85%A2/"/>
+    <id>http://example.com/2021/04/06/oops!ARM%20Linux%E8%BF%90%E8%A1%8C%E9%80%9F%E5%BA%A6%E5%BC%82%E5%B8%B8%E5%8F%98%E6%85%A2/</id>
+    <published>2021-04-06T07:09:20.668Z</published>
+    <updated>2020-09-26T01:20:31.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="oops-ARM-Linux运行速度异常变慢"><a href="#oops-ARM-Linux运行速度异常变慢" class="headerlink" title="oops!ARM Linux运行速度异常变慢"></a>oops!ARM Linux运行速度异常变慢</h1><h2 id="1-问题"><a href="#1-问题" class="headerlink" title="1. 问题"></a>1. 问题</h2><p>&emsp;&emsp;最近在树莓派上做嵌入式Linux开发，使用linux内核+busybox+一些必要的库构建了一个非常精简的Linux系统。我的开发涉及到了视频编码和传输，在使用官方的Raspberry PI OS时，视频编码可以达到30fps，而使用我构建的精简Linux系统时，视频编码速率只有16fps左右，减少了几乎一半。我非常困惑，因为Linux内核，程序以及使用的动态库都是相同，理论上应该不会有这么多区别。由于我的精简Linux没有做完整的用户空间配置，我估计是内核配置方面出了问题。</p><p>&emsp;&emsp;由于速度降低出现在需要占用CPU算力的视频编码阶段，并且树莓派是多核CPU，首先，我检查了在两个系统中运行的视频编码程序启动的线程是否相同，然而结果是相同的，并且在编码时都占用了200%的CPU（即占用了两个核心）。不是核心数量的问题，可能是CPU频率问题，我又查看了编码时两个系统的CPU运行频率，使用如下命令查看：</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">cat /sys/devices/system/cpu/cpufreq/policy0/cpuinfo_cur_freq</span><br></pre></td></tr></table></figure><p>果然，官方的Raspberry PI OS中编码时CPU频率为1200000，而我的精简Linux在编码时CPU频率为600000，频率降低了一半，和编码帧率的减低幅度基本吻合，应该就是这个原因了。</p><center>正在进行视频编码的树莓派官方系统</center><p><img src="materials/coding_rpi_official.png" alt="正在进行视频编码的树莓派官方系统"></p><center>正在进行视频编码的精简Linux系统</center><p><img src="materials/coding_lite_linux.png" alt="正在进行视频编码的精简Linux系统"></p><p>&emsp;&emsp;我查看了<code>/sys/devices/system/cpu/cpufreq/policy0</code>目录中的文件，有许多以<code>scaling</code>开头的文件用于控制CPU的频率调整，其中<code>scaling_min_freq</code>,<code>scaling_max_freq</code>控制可调节的最大和最小CPU频率，<code>scaling_governor</code>用于查看当前CPU频率调节策略和控制CPU频率调节策略，<code>scaling_avaliable_governors</code>显示所有CPU调节策略。我的精简Linux系统中CPU频率调节策略为<code>powersave</code>，因此CPU频率在编码时没有自动提高，应将将其修改为<code>ondemand</code>。</p><h2 id="2-解决方案"><a href="#2-解决方案" class="headerlink" title="2. 解决方案"></a>2. 解决方案</h2><p>调整CPU的频率控制策略，将powersave改为ondemand</p><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="built_in">echo</span> <span class="string">&quot;ondemand&quot;</span> &gt; /sys/devices/system/cpu/cpufreq/policy0/scaling_governor</span><br></pre></td></tr></table></figure><h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><blockquote><p><a href="https://www.kernel.org/doc/html/v4.14/admin-guide/pm/cpufreq.html">https://www.kernel.org/doc/html/v4.14/admin-guide/pm/cpufreq.html</a></p></blockquote>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;oops-ARM-Linux运行速度异常变慢&quot;&gt;&lt;a href=&quot;#oops-ARM-Linux运行速度异常变慢&quot; class=&quot;headerlink&quot; title=&quot;oops!ARM Linux运行速度异常变慢&quot;&gt;&lt;/a&gt;oops!ARM Linux运行速度异常</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>oops!virtualbox自动调节分辨率失效</title>
+    <link href="http://example.com/2021/04/06/oops!virtualbox%E8%87%AA%E5%8A%A8%E8%B0%83%E8%8A%82%E5%88%86%E8%BE%A8%E7%8E%87%E5%A4%B1%E6%95%88/"/>
+    <id>http://example.com/2021/04/06/oops!virtualbox%E8%87%AA%E5%8A%A8%E8%B0%83%E8%8A%82%E5%88%86%E8%BE%A8%E7%8E%87%E5%A4%B1%E6%95%88/</id>
+    <published>2021-04-06T07:09:20.653Z</published>
+    <updated>2020-11-06T07:01:54.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="oops-virutalbox自动调节屏幕分辨率失效"><a href="#oops-virutalbox自动调节屏幕分辨率失效" class="headerlink" title="oops!virutalbox自动调节屏幕分辨率失效"></a>oops!virutalbox自动调节屏幕分辨率失效</h1><p>&emsp;&emsp;最近我的virtualbox中的xubuntu虚拟机出现了自动调节屏幕分辨率失效的问题。如下图所示，当设置全屏或者调整窗口分辨率时会弹出错误提示<em>VBoxClient:Failed to get display change request,rc=VERR_IO_B…</em><img src="C:\Users\janua\OneDrive\blog\materials\virtualbox_fail_to_resize.png" alt="virtualbox_fail_to_resize"></p><p>&emsp;&emsp;此时，使用<code>journalctl -k -f</code>查看内核日志可以看到VBoxService的启动失败的日志内容，错误原因是<code>VERR_VERSION_MISMATCH</code>。</p><p><img src="C:\Users\janua\OneDrive\blog\materials\virtualbox_fail_to_resize_log.png" alt="virtualbox_fail_to_resize_log"></p><p>&emsp;&emsp;上述问题在最近一个月出现了几次，通过重新安装virtualbox增强工具就解决了（确保重新安装成功了），然而这个问题重复发生的原因没有找到。经过研究，我发现是因为xubuntu<strong>自动更新了内核的小版本</strong>导致的。内核小版本更新后，virtualbox增强工具在编译安装时使用的内核版本和现在运行的内核版本不同就会导致上述版本不匹配的问题。所以，出现上述问题后，<strong>重新安装virtulbox增强工具</strong>，并<strong>关闭xubuntu的自动更新</strong>应该就能够较为长久的解决问题。当然，为了系统的安全性，在每次内核更新导致出现问题后重新安装virtualbox增强工具也可以。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;oops-virutalbox自动调节屏幕分辨率失效&quot;&gt;&lt;a href=&quot;#oops-virutalbox自动调节屏幕分辨率失效&quot; class=&quot;headerlink&quot; title=&quot;oops!virutalbox自动调节屏幕分辨率失效&quot;&gt;&lt;/a&gt;oops!vir</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>制作磁盘镜像文件</title>
+    <link href="http://example.com/2021/04/06/%E5%88%B6%E4%BD%9C%E7%A3%81%E7%9B%98%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6/"/>
+    <id>http://example.com/2021/04/06/%E5%88%B6%E4%BD%9C%E7%A3%81%E7%9B%98%E9%95%9C%E5%83%8F%E6%96%87%E4%BB%B6/</id>
+    <published>2021-04-06T07:09:20.637Z</published>
+    <updated>2020-10-30T04:25:09.799Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="制作磁盘镜像文件"><a href="#制作磁盘镜像文件" class="headerlink" title="制作磁盘镜像文件"></a>制作磁盘镜像文件</h1><p>&emsp;&emsp;我最近需要制作一个小的磁盘镜像来存放嵌入式linux系统的用户空间程序，这篇博客介绍了制作一个磁盘镜像文件的过程。</p><ol><li>创建一个文件</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">dd <span class="keyword">if</span>=/dev/zero of=disk.image bs=20M count=1</span><br></pre></td></tr></table></figure><ol start="2"><li>给磁盘文件创建分区表</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">fdisk disk.image</span><br></pre></td></tr></table></figure><p>输入<code>o</code>创建一个MS DOS分区表<br>输入<code>n</code>创建一个分区<br>这一步需要记录分区的起始块号和块大小（一般为512字节）</p><ol start="3"><li>将磁盘文件中的分区关联到loop设备</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment"># -o选项设置文件偏移</span></span><br><span class="line">losetup /dev/loop0 -o $((起始块号 * 块大小)) disk.image</span><br></pre></td></tr></table></figure><ol start="4"><li>创建文件系统</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">mkfs.ext4 /dev/loop0</span><br></pre></td></tr></table></figure><ol start="5"><li>挂载文件系统，写入文件</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">mount /dev/loop0 -t ext4 /mnt</span><br><span class="line">cp data /mnt/data</span><br></pre></td></tr></table></figure><ol start="6"><li>卸载文件系统，解除文件与loop设备的关联</li></ol><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">umount /mnt</span><br><span class="line">losetup -d /dev/loop0</span><br></pre></td></tr></table></figure><p>经过上面6步，我们就得到了一个磁盘镜像文件，该文件可以直接使用dd命令写入磁盘中使用。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;制作磁盘镜像文件&quot;&gt;&lt;a href=&quot;#制作磁盘镜像文件&quot; class=&quot;headerlink&quot; title=&quot;制作磁盘镜像文件&quot;&gt;&lt;/a&gt;制作磁盘镜像文件&lt;/h1&gt;&lt;p&gt;&amp;emsp;&amp;emsp;我最近需要制作一个小的磁盘镜像来存放嵌入式linux系统的用户空间程</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>libavformat_inner</title>
+    <link href="http://example.com/2021/04/06/libavformat_inner/"/>
+    <id>http://example.com/2021/04/06/libavformat_inner/</id>
+    <published>2021-04-06T07:09:20.621Z</published>
+    <updated>2020-09-10T13:55:08.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="libavformat架构分析"><a href="#libavformat架构分析" class="headerlink" title="libavformat架构分析"></a>libavformat架构分析</h1><h2 id="1-简介"><a href="#1-简介" class="headerlink" title="1. 简介"></a>1. 简介</h2><p>&emsp;&emsp;libavformat时ffmpeg项目的一部分，其功能是将编码后的视频/音频帧封装（muxing）为媒体文件（如mp4,flv,avi等等）或者封装为适合网络传输的媒体流（rtp,rtmp,rtsp等等）以及从媒体文件或者封装后的媒体流中提取（demuxing）视频/音频帧。</p><h2 id="2-重要的数据结构"><a href="#2-重要的数据结构" class="headerlink" title="2. 重要的数据结构"></a>2. 重要的数据结构</h2><p><code>AVFormatContext</code>该结构是libavformat进行封装/解封装操作的最顶层结构，记录了一个封装/解封装操作所需的全部参数，上下文信息以及其他更低层的数据结构。</p><p><code>AVStream</code></p><p><code>AVInputFormat</code>该结构是对一种封装格式的解封装操作（demuxing）的抽象。</p><p><code>AVOutputFormat</code>该结构是对一种封装格式的封装操作（muxing）的抽象。</p><p><code>AVIOContext</code>该结构保存了ffmpeg实现的IO缓冲功能所需的上下文信息以及更底层的数据结构。</p><p><code>URLContext</code>该结构是对一种底层IO方式的抽象，主要是对rtp/udp/tcp等网络通信IO方式的抽象。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;libavformat架构分析&quot;&gt;&lt;a href=&quot;#libavformat架构分析&quot; class=&quot;headerlink&quot; title=&quot;libavformat架构分析&quot;&gt;&lt;/a&gt;libavformat架构分析&lt;/h1&gt;&lt;h2 id=&quot;1-简介&quot;&gt;&lt;a href</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>code_snippet</title>
+    <link href="http://example.com/2021/04/06/code_snippet/"/>
+    <id>http://example.com/2021/04/06/code_snippet/</id>
+    <published>2021-04-06T07:09:20.606Z</published>
+    <updated>2020-10-20T06:43:55.000Z</updated>
+    
+    <content type="html"><![CDATA[<figure class="highlight vb"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">Private</span> <span class="keyword">Sub</span> RegExp_Replace()</span><br><span class="line"></span><br><span class="line">    <span class="keyword">Dim</span> RegExp <span class="keyword">As</span> <span class="type">Object</span></span><br><span class="line">    <span class="keyword">Dim</span> SearchRange <span class="keyword">As</span> Range, Cell <span class="keyword">As</span> Range</span><br><span class="line">    </span><br><span class="line">    <span class="comment">&#x27;此处定义正则表达式</span></span><br><span class="line">    <span class="keyword">Set</span> RegExp = CreateObject(<span class="string">&quot;vbscript.regexp&quot;</span>)</span><br><span class="line">    RegExp.Pattern = <span class="string">&quot;[0-9]&#123;5&#125;&quot;</span></span><br><span class="line">     </span><br><span class="line">    <span class="comment">&#x27;此处指定查找范围</span></span><br><span class="line">    <span class="keyword">Set</span> SearchRange = ActiveSheet.Range(<span class="string">&quot;A1:A99&quot;</span>)</span><br><span class="line">    </span><br><span class="line">    <span class="comment">&#x27;遍历查找范围内的单元格</span></span><br><span class="line">    <span class="keyword">For</span> <span class="keyword">Each</span> Cell <span class="keyword">In</span> SearchRange</span><br><span class="line">        <span class="keyword">Set</span> Matches = RegExp.Execute(Cell.Value)</span><br><span class="line">        <span class="keyword">If</span> Matches.Count &gt;= <span class="number">1</span> <span class="keyword">Then</span></span><br><span class="line">            <span class="keyword">Set</span> Match = Matches(<span class="number">0</span>)</span><br><span class="line">            Cell.Value = RegExp.Replace(Cell.Value, <span class="string">&quot;&quot;</span>)</span><br><span class="line">        <span class="keyword">End</span> <span class="keyword">If</span></span><br><span class="line">    <span class="keyword">Next</span></span><br><span class="line"></span><br><span class="line"><span class="keyword">End</span> <span class="keyword">Sub</span></span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;figure class=&quot;highlight vb&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;td class=&quot;gutter&quot;&gt;&lt;pre&gt;&lt;span class=&quot;line&quot;&gt;1&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;line&quot;&gt;2&lt;/span&gt;&lt;br&gt;&lt;span class=&quot;l</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Arm_trustzone硬件架构</title>
+    <link href="http://example.com/2021/04/06/Arm_trustzone%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/"/>
+    <id>http://example.com/2021/04/06/Arm_trustzone%E7%A1%AC%E4%BB%B6%E6%9E%B6%E6%9E%84/</id>
+    <published>2021-04-06T07:09:20.590Z</published>
+    <updated>2020-12-07T11:52:34.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Arm-TrustZone硬件架构"><a href="#Arm-TrustZone硬件架构" class="headerlink" title="Arm TrustZone硬件架构"></a>Arm TrustZone硬件架构</h1><h2 id="简介"><a href="#简介" class="headerlink" title="简介"></a>简介</h2><p>Trustzone是Arm公司于2009年提出的一种用于arm芯片的硬件安全保护框架。</p><h2 id="硬件架构"><a href="#硬件架构" class="headerlink" title="硬件架构"></a>硬件架构</h2><p>系统总线增加NS位，隔离S和NS状态对资源的访问<br>提供monitor模式，负责S和NS状态的切换<br>为cache/TLB增加NS位来区分NS和S的内存访问<br>使用协处理器CP15的SCR寄存器来保存cpu所处安全状态</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Arm-TrustZone硬件架构&quot;&gt;&lt;a href=&quot;#Arm-TrustZone硬件架构&quot; class=&quot;headerlink&quot; title=&quot;Arm TrustZone硬件架构&quot;&gt;&lt;/a&gt;Arm TrustZone硬件架构&lt;/h1&gt;&lt;h2 id=&quot;简介&quot;&gt;&lt;</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Linux内核读写文件API</title>
+    <link href="http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6API/"/>
+    <id>http://example.com/2021/04/06/Linux%E5%86%85%E6%A0%B8%E8%AF%BB%E5%86%99%E6%96%87%E4%BB%B6API/</id>
+    <published>2021-04-06T07:09:20.574Z</published>
+    <updated>2020-10-04T16:17:44.907Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="Linux读写文件API"><a href="#Linux读写文件API" class="headerlink" title="Linux读写文件API"></a>Linux读写文件API</h1><blockquote><p>内核版本4.19</p></blockquote><h1 id="头文件"><a href="#头文件" class="headerlink" title="头文件"></a>头文件</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">#include &lt;linux&#x2F;fs&gt;</span><br></pre></td></tr></table></figure><h1 id="数据结构和函数"><a href="#数据结构和函数" class="headerlink" title="数据结构和函数"></a>数据结构和函数</h1><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">struct file* file;</span><br><span class="line">struct file *filp_open(const char *, int, umode_t);</span><br><span class="line">ssize_t kernel_read(struct file *, void *, size_t, loff_t *);</span><br><span class="line">ssize_t kernel_write(struct file *, const void *, size_t, loff_t *);</span><br><span class="line">int filp_close(struct file *, fl_owner_t id);</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;Linux读写文件API&quot;&gt;&lt;a href=&quot;#Linux读写文件API&quot; class=&quot;headerlink&quot; title=&quot;Linux读写文件API&quot;&gt;&lt;/a&gt;Linux读写文件API&lt;/h1&gt;&lt;blockquote&gt;
+&lt;p&gt;内核版本4.19&lt;/p&gt;
+&lt;/bl</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>bug和技巧</title>
+    <link href="http://example.com/2021/04/06/bug%E5%92%8C%E6%8A%80%E5%B7%A7/"/>
+    <id>http://example.com/2021/04/06/bug%E5%92%8C%E6%8A%80%E5%B7%A7/</id>
+    <published>2021-04-06T07:09:20.574Z</published>
+    <updated>2020-11-25T01:07:42.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="一些奇怪的bug"><a href="#一些奇怪的bug" class="headerlink" title="一些奇怪的bug"></a>一些奇怪的bug</h1><ol><li>linux中64位系统运行32位程序提示找不到程序<code>No such file or directory</code>，而程序文件确实存在</li></ol><p>&emsp;&emsp;实际上，这是找不到动态链接器导致了，需要将32位的动态链接器放到/lib目录下</p><ol start="2"><li>linux系统查看文件占用情况(可以找到占用dpkg锁的进程)</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">sudo lsof &lt;filename&gt;</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;一些奇怪的bug&quot;&gt;&lt;a href=&quot;#一些奇怪的bug&quot; class=&quot;headerlink&quot; title=&quot;一些奇怪的bug&quot;&gt;&lt;/a&gt;一些奇怪的bug&lt;/h1&gt;&lt;ol&gt;
+&lt;li&gt;linux中64位系统运行32位程序提示找不到程序&lt;code&gt;No such f</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>oops!edge浏览器打开pdf文件自动跳转到主页</title>
+    <link href="http://example.com/2021/04/06/oops!edge%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80pdf%E6%96%87%E4%BB%B6%E8%87%AA%E5%8A%A8%E8%B7%B3%E8%BD%AC%E5%88%B0%E4%B8%BB%E9%A1%B5/"/>
+    <id>http://example.com/2021/04/06/oops!edge%E6%B5%8F%E8%A7%88%E5%99%A8%E6%89%93%E5%BC%80pdf%E6%96%87%E4%BB%B6%E8%87%AA%E5%8A%A8%E8%B7%B3%E8%BD%AC%E5%88%B0%E4%B8%BB%E9%A1%B5/</id>
+    <published>2021-04-06T07:09:20.559Z</published>
+    <updated>2020-10-30T04:25:06.165Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="oops-edge浏览器打开pdf文件自动跳转到主页"><a href="#oops-edge浏览器打开pdf文件自动跳转到主页" class="headerlink" title="oops!edge浏览器打开pdf文件自动跳转到主页"></a>oops!edge浏览器打开pdf文件自动跳转到主页</h1><p>&emsp;&emsp;更新基于chrome内核的edge浏览器后，使用edge浏览器打开pdf文件浏览器会自动跳转到主页而不是打开pdf文件。经过检查，原因是开启了浏览器首页保护，将首页保护关闭就可以打开pdf文件了。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;oops-edge浏览器打开pdf文件自动跳转到主页&quot;&gt;&lt;a href=&quot;#oops-edge浏览器打开pdf文件自动跳转到主页&quot; class=&quot;headerlink&quot; title=&quot;oops!edge浏览器打开pdf文件自动跳转到主页&quot;&gt;&lt;/a&gt;oops!edg</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>x86指令探索</title>
+    <link href="http://example.com/2021/04/06/x86%E6%8C%87%E4%BB%A4%E6%8E%A2%E7%B4%A2/"/>
+    <id>http://example.com/2021/04/06/x86%E6%8C%87%E4%BB%A4%E6%8E%A2%E7%B4%A2/</id>
+    <published>2021-04-06T07:09:20.543Z</published>
+    <updated>2020-11-09T01:16:23.224Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="rol"><a href="#rol" class="headerlink" title="rol"></a>rol</h1><p>rol指令将寄存器中的值循环左移</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">rol eax, count</span><br></pre></td></tr></table></figure><h1 id="bswap"><a href="#bswap" class="headerlink" title="bswap"></a>bswap</h1><p>bswap指令将寄存器中的值进行大小端转换</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">bswap eax</span><br></pre></td></tr></table></figure><h1 id="xchg"><a href="#xchg" class="headerlink" title="xchg"></a>xchg</h1><p>xchg指令将两个寄存器中的值进行交换</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">xchg    al, ah</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;rol&quot;&gt;&lt;a href=&quot;#rol&quot; class=&quot;headerlink&quot; title=&quot;rol&quot;&gt;&lt;/a&gt;rol&lt;/h1&gt;&lt;p&gt;rol指令将寄存器中的值循环左移&lt;/p&gt;
+&lt;figure class=&quot;highlight plain&quot;&gt;&lt;table&gt;&lt;tr&gt;&lt;t</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>dokcer学习笔记1</title>
+    <link href="http://example.com/2021/04/06/dokcer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/"/>
+    <id>http://example.com/2021/04/06/dokcer%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B01/</id>
+    <published>2021-04-06T07:09:20.528Z</published>
+    <updated>2020-10-30T16:36:04.677Z</updated>
+    
+    <content type="html"><![CDATA[<p>#docker学习笔记1</p><h2 id="1-创建一个镜像"><a href="#1-创建一个镜像" class="headerlink" title="1. 创建一个镜像"></a>1. 创建一个镜像</h2><h3 id="1-1-Dockerfile"><a href="#1-1-Dockerfile" class="headerlink" title="1.1 Dockerfile"></a>1.1 Dockerfile</h3><figure class="highlight dockerfile"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">From</span> scratch</span><br><span class="line"><span class="keyword">WORKDIR</span><span class="bash"> /usr/bin</span></span><br><span class="line"><span class="keyword">COPY</span><span class="bash"> . .</span></span><br><span class="line"><span class="comment"># 默认启动命令</span></span><br><span class="line"><span class="keyword">CMD</span><span class="bash"> [<span class="string">&quot;/bin/bash&quot;</span>]</span></span><br></pre></td></tr></table></figure><h3 id="1-2-构建镜像"><a href="#1-2-构建镜像" class="headerlink" title="1.2 构建镜像"></a>1.2 构建镜像</h3><figure class="highlight sh"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">docker build --tag xxxx:1.0.0 .</span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;#docker学习笔记1&lt;/p&gt;
+&lt;h2 id=&quot;1-创建一个镜像&quot;&gt;&lt;a href=&quot;#1-创建一个镜像&quot; class=&quot;headerlink&quot; title=&quot;1. 创建一个镜像&quot;&gt;&lt;/a&gt;1. 创建一个镜像&lt;/h2&gt;&lt;h3 id=&quot;1-1-Dockerfile&quot;&gt;&lt;a </summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>oops!ubuntu中virtualbox自动调节分辨率失效</title>
+    <link href="http://example.com/2021/04/06/oops!ubuntu%E4%B8%ADvirtualbox%E8%87%AA%E5%8A%A8%E8%B0%83%E8%8A%82%E5%88%86%E8%BE%A8%E7%8E%87%E5%A4%B1%E6%95%88/"/>
+    <id>http://example.com/2021/04/06/oops!ubuntu%E4%B8%ADvirtualbox%E8%87%AA%E5%8A%A8%E8%B0%83%E8%8A%82%E5%88%86%E8%BE%A8%E7%8E%87%E5%A4%B1%E6%95%88/</id>
+    <published>2021-04-06T07:09:20.528Z</published>
+    <updated>2020-11-06T06:43:46.000Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="oops-virutalbox自动调节分辨率失效"><a href="#oops-virutalbox自动调节分辨率失效" class="headerlink" title="oops!virutalbox自动调节分辨率失效"></a>oops!virutalbox自动调节分辨率失效</h1><p>&emsp;&emsp;最近我的virtualbox中的xubunt虚拟机出现了自动调节屏幕分辨率失效的问题，如下图所示。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;oops-virutalbox自动调节分辨率失效&quot;&gt;&lt;a href=&quot;#oops-virutalbox自动调节分辨率失效&quot; class=&quot;headerlink&quot; title=&quot;oops!virutalbox自动调节分辨率失效&quot;&gt;&lt;/a&gt;oops!virutalbo</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>win10应用自启动</title>
+    <link href="http://example.com/2021/04/06/win10%E5%BA%94%E7%94%A8%E8%87%AA%E5%90%AF%E5%8A%A8/"/>
+    <id>http://example.com/2021/04/06/win10%E5%BA%94%E7%94%A8%E8%87%AA%E5%90%AF%E5%8A%A8/</id>
+    <published>2021-04-06T07:09:20.512Z</published>
+    <updated>2021-04-06T00:44:40.103Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="在Windows10中设置应用自启动"><a href="#在Windows10中设置应用自启动" class="headerlink" title="在Windows10中设置应用自启动"></a>在Windows10中设置应用自启动</h1><p>&emsp;&emsp;将应用或者其快捷方式放到<code>C:\ProgramData\Microsoft\Windows\Start Menu\Programs\StartUp</code>文件夹中即可。</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;在Windows10中设置应用自启动&quot;&gt;&lt;a href=&quot;#在Windows10中设置应用自启动&quot; class=&quot;headerlink&quot; title=&quot;在Windows10中设置应用自启动&quot;&gt;&lt;/a&gt;在Windows10中设置应用自启动&lt;/h1&gt;&lt;p&gt;&amp;emsp;</summary>
+      
+    
+    
+    
+    
+  </entry>
+  
+  <entry>
+    <title>FAT文件系统</title>
+    <link href="http://example.com/2021/04/06/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
+    <id>http://example.com/2021/04/06/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/FAT%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/</id>
+    <published>2021-04-06T07:09:20.496Z</published>
+    <updated>2021-02-25T07:51:42.116Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="FAT文件系统"><a href="#FAT文件系统" class="headerlink" title="FAT文件系统"></a>FAT文件系统</h1><h2 id="cluster-entry"><a href="#cluster-entry" class="headerlink" title="cluster entry"></a>cluster entry</h2><p>FAT32中一个cluster entry占用4个字节（32bit），但只有低28bit是有效的，cluster entry的值有如下几种：</p><ol><li><code>0x0</code>表示该cluster是空闲的</li><li><code>0xFFFFFFF7</code>表示该cluster损坏</li><li><code>0xFFFFFFF8~0xFFFFFFFF</code>表示该cluster是文件内容的最后一个cluster</li><li>其他值表示文件内容的下一个cluster编号</li></ol><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">-----------------</span><br><span class="line">      MBR</span><br><span class="line">-----------------</span><br><span class="line">  FAT</span><br><span class="line">-----------------</span><br><span class="line">  FAT2(backup)</span><br><span class="line">-----------------</span><br><span class="line">      data</span><br><span class="line">-----------------</span><br><span class="line"></span><br></pre></td></tr></table></figure>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h1 id=&quot;FAT文件系统&quot;&gt;&lt;a href=&quot;#FAT文件系统&quot; class=&quot;headerlink&quot; title=&quot;FAT文件系统&quot;&gt;&lt;/a&gt;FAT文件系统&lt;/h1&gt;&lt;h2 id=&quot;cluster-entry&quot;&gt;&lt;a href=&quot;#cluster-entry&quot; class</summary>
+      
+    
+    
+    
+    <category term="文件系统" scheme="http://example.com/categories/%E6%96%87%E4%BB%B6%E7%B3%BB%E7%BB%9F/"/>
+    
+    
+  </entry>
+  
+</feed>

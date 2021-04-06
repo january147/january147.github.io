@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="Rust重要概念所有权基本概念变量（variable）：代表一个数据，变量对值拥有所有权，所有权仅能被一个变量拥有，当变量离开作用域时对应的值将被自动释放。当进行变量赋值时，变量对应值的所有权发生转移，原变量将不再可用（不能访问原值）。 引用（reference）：代表一个借用的数据，应用对数据没有所有权，可以有多个引用同时指向一个变量的值，当引用离开作用域时不会释放对应变量的值。但有以下原则：">
+<meta property="og:type" content="article">
+<meta property="og:title" content="rust语言要点">
+<meta property="og:url" content="http://example.com/2021/04/06/rust/rust%E8%AF%AD%E8%A8%80%E8%A6%81%E7%82%B9/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="Rust重要概念所有权基本概念变量（variable）：代表一个数据，变量对值拥有所有权，所有权仅能被一个变量拥有，当变量离开作用域时对应的值将被自动释放。当进行变量赋值时，变量对应值的所有权发生转移，原变量将不再可用（不能访问原值）。 引用（reference）：代表一个借用的数据，应用对数据没有所有权，可以有多个引用同时指向一个变量的值，当引用离开作用域时不会释放对应变量的值。但有以下原则：">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-06T07:09:19.950Z">
+<meta property="article:modified_time" content="2021-03-07T02:53:06.835Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/rust/rust%E8%AF%AD%E8%A8%80%E8%A6%81%E7%82%B9/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>rust语言要点 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#Rust%E9%87%8D%E8%A6%81%E6%A6%82%E5%BF%B5"><span class="nav-number">1.</span> <span class="nav-text">Rust重要概念</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%80%E6%9C%89%E6%9D%83"><span class="nav-number">1.1.</span> <span class="nav-text">所有权</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%9F%BA%E6%9C%AC%E6%A6%82%E5%BF%B5"><span class="nav-number">1.1.1.</span> <span class="nav-text">基本概念</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%94%9F%E5%91%BD%E5%91%A8%E6%9C%9F%E6%A0%87%E8%AE%B0"><span class="nav-number">1.2.</span> <span class="nav-text">生命周期标记</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%BF%94%E5%9B%9E%E5%BC%95%E7%94%A8"><span class="nav-number">1.2.1.</span> <span class="nav-text">返回引用</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AD%E5%8C%85-closure"><span class="nav-number">1.3.</span> <span class="nav-text">闭包(closure)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%BB%93%E6%9E%84%E6%95%B0%E6%8D%AE%EF%BC%88struct%EF%BC%89"><span class="nav-number">1.4.</span> <span class="nav-text">结构数据（struct）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%89%B9%E6%80%A7%EF%BC%88Trait%EF%BC%89"><span class="nav-number">1.5.</span> <span class="nav-text">特性（Trait）</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B3%9B%E5%9E%8B"><span class="nav-number">1.5.1.</span> <span class="nav-text">泛型</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E7%BA%BF%E7%A8%8B"><span class="nav-number">1.6.</span> <span class="nav-text">多线程</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/rust/rust%E8%AF%AD%E8%A8%80%E8%A6%81%E7%82%B9/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          rust语言要点
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-06 15:09:19" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:19+08:00">2021-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-07 10:53:06" itemprop="dateModified" datetime="2021-03-07T10:53:06+08:00">2021-03-07</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/rust/" itemprop="url" rel="index"><span itemprop="name">rust</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="Rust重要概念"><a href="#Rust重要概念" class="headerlink" title="Rust重要概念"></a>Rust重要概念</h1><h2 id="所有权"><a href="#所有权" class="headerlink" title="所有权"></a>所有权</h2><h3 id="基本概念"><a href="#基本概念" class="headerlink" title="基本概念"></a>基本概念</h3><p><strong>变量（variable）</strong>：代表一个数据，变量对值拥有所有权，所有权仅能被一个变量拥有，当变量离开作用域时对应的值将被自动释放。当进行<strong>变量赋值</strong>时，变量对应值的<strong>所有权发生转移</strong>，原变量将不再可用（不能访问原值）。</p>
+<p><strong>引用（reference）</strong>：代表一个借用的数据，应用对数据没有所有权，可以有多个引用同时指向一个变量的值，当引用离开作用域时<strong>不会</strong>释放对应变量的值。但有以下原则：</p>
+<ol>
+<li>一个变量至多有一个可变引用</li>
+<li>可变引用不能和不可变引用同时存在</li>
+</ol>
+<p><strong>值（value）</strong> :  值是具体的数据，在程序中表现为变量或者引用，值被唯一的一个变量拥有，该变量的生命周期和值的生命周期绑定。</p>
+<p>Rust通过编译时的静态检查确保任何引用均为合法（即访问引用时其对于的变量必定位于作用域中）</p>
+<h2 id="生命周期标记"><a href="#生命周期标记" class="headerlink" title="生命周期标记"></a>生命周期标记</h2><p>在某些情况下Rust的编译器无法在编译时确定一个引用对应的变量，因此无法确定引用的合法生命周期，这时候需要通过生命周期标记的方式来显式的告知编译器。</p>
+<h3 id="返回引用"><a href="#返回引用" class="headerlink" title="返回引用"></a>返回引用</h3><p>当函数的参数为引用且返回值为参数中的引用时如果无法确定返回哪个引用参数则需要进行生命周期标记。</p>
+<p>下面这个函数可能返回x或者返回y，因此编译器在编译时无法确定返回值会引用哪个变量，因此无法在编译时确定不合法的引用，我们需要通过生命周期标记的方式告知编译器返回值和参数的生命周期关系。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">longest</span></span>(x: &amp;<span class="built_in">str</span>, y: &amp;<span class="built_in">str</span>) -&gt; &amp;<span class="built_in">str</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x.len() &gt; y.len() &#123;</span><br><span class="line">        x</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        y</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>我们给参数<code>x</code>和<code>y</code>以及返回值设置相同生命周期标记<code>&#39;a</code>，此时编译器会将<code>x</code> 和<code>y</code>引用的变量中生命周期最短的变量的生命周期作为返回值的生命周期。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">longest</span></span>&lt;<span class="symbol">&#x27;a</span>&gt;(x: &amp;<span class="symbol">&#x27;a</span> <span class="built_in">str</span>, y: &amp;<span class="symbol">&#x27;a</span> <span class="built_in">str</span>) -&gt; &amp;<span class="symbol">&#x27;a</span> <span class="built_in">str</span> &#123;</span><br><span class="line">    <span class="keyword">if</span> x.len() &gt; y.len() &#123;</span><br><span class="line">        x</span><br><span class="line">    &#125; <span class="keyword">else</span> &#123;</span><br><span class="line">        y</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>注意: 函数<strong>无法返回的对函数内部创建的变量的引用</strong>，对于函数内部创建的变量<strong>只能返回变量本身</strong>。</p>
+<h2 id="闭包-closure"><a href="#闭包-closure" class="headerlink" title="闭包(closure)"></a>闭包(closure)</h2><p>闭包是一种匿名函数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">|| &#123;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="结构数据（struct）"><a href="#结构数据（struct）" class="headerlink" title="结构数据（struct）"></a>结构数据（struct）</h2><p><code>struct</code>用于自定义复杂的数据类型，类似于c语言的struct。</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">Duck</span></span>&#123;</span><br><span class="line">	name : <span class="built_in">String</span>,</span><br><span class="line">	height : <span class="built_in">f32</span>,</span><br><span class="line">	weight : <span class="built_in">f32</span></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>初始化<code>struct</code></p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">fn</span> <span class="title">main</span></span>() &#123;</span><br><span class="line">	<span class="keyword">let</span> duck = Duck&#123;</span><br><span class="line">        name : <span class="built_in">String</span>::from(<span class="string">&quot;Bob&quot;</span>),</span><br><span class="line">        height : <span class="number">40.0</span>,</span><br><span class="line">        weight : <span class="number">20.0</span></span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+
+
+<h2 id="特性（Trait）"><a href="#特性（Trait）" class="headerlink" title="特性（Trait）"></a>特性（Trait）</h2><p>特性是一种类似java中Interface的类型，其定义了在一种抽象数据类型上的一组函数（行为）。</p>
+<p>定义特性</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">trait</span> <span class="title">DuckBehavior</span></span>&#123;</span><br><span class="line">	<span class="function"><span class="keyword">fn</span> <span class="title">fly</span></span>(&amp;<span class="keyword">self</span>);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>定义数据类型</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span> <span class="title">RocketDuck</span></span>&#123;</span><br><span class="line">	fly_method : <span class="built_in">String</span></span><br><span class="line">&#125; </span><br></pre></td></tr></table></figure>
+
+<p>实现特性</p>
+<figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">impl</span> DuckBehavior <span class="keyword">for</span> RocketDuck&#123;</span><br><span class="line">    <span class="function"><span class="keyword">fn</span> <span class="title">fly</span></span>(&amp;<span class="keyword">self</span>)&#123;</span><br><span class="line">        <span class="built_in">println!</span>(<span class="string">&quot;fly with &#123;&#125;&quot;</span>, <span class="keyword">self</span>.fly_method);</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h3 id="泛型"><a href="#泛型" class="headerlink" title="泛型"></a>泛型</h3><figure class="highlight rust"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="class"><span class="keyword">struct</span>&lt;<span class="title">T</span></span>,E&gt;&#123;</span><br><span class="line">	a : T,</span><br><span class="line">	b : F</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="多线程"><a href="#多线程" class="headerlink" title="多线程"></a>多线程</h2><p>move和闭包（closure）</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/ros/gazebo%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="prev" title="gazebo学习笔记">
+                  <i class="fa fa-chevron-left"></i> gazebo学习笔记
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/web%E6%8A%80%E6%9C%AF/hexo%E9%85%8D%E7%BD%AE/" rel="next" title="hexo配置">
+                  hexo配置 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="密码学标准Public Key Cryptography System(PKCS)PKCS#1主要定义了RSA加密签名的算法、密钥格式、以及加密签名数据格式。    Version RFC 编号 简介    PKCS #1 RFC 8017 RSA Cryptography Standard（RSA加密签名模式以及公私钥格式）包括加密方案RSAES-OAEP, RSAES-PKCS1-V1.5,">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码学标准">
+<meta property="og:url" content="http://example.com/2021/04/06/%E5%BC%80%E5%8F%91%E8%80%85%E5%AF%86%E7%A0%81%E5%AD%A6/%E5%AF%86%E7%A0%81%E5%AD%A6%E6%A0%87%E5%87%86/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="密码学标准Public Key Cryptography System(PKCS)PKCS#1主要定义了RSA加密签名的算法、密钥格式、以及加密签名数据格式。    Version RFC 编号 简介    PKCS #1 RFC 8017 RSA Cryptography Standard（RSA加密签名模式以及公私钥格式）包括加密方案RSAES-OAEP, RSAES-PKCS1-V1.5,">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-06T07:09:20.278Z">
+<meta property="article:modified_time" content="2020-12-17T08:42:44.685Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/%E5%BC%80%E5%8F%91%E8%80%85%E5%AF%86%E7%A0%81%E5%AD%A6/%E5%AF%86%E7%A0%81%E5%AD%A6%E6%A0%87%E5%87%86/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>密码学标准 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E5%AD%A6%E6%A0%87%E5%87%86"><span class="nav-number">1.</span> <span class="nav-text">密码学标准</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Public-Key-Cryptography-System-PKCS"><span class="nav-number">1.1.</span> <span class="nav-text">Public Key Cryptography System(PKCS)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81"><span class="nav-number">1.2.</span> <span class="nav-text">椭圆曲线公钥密码</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%A0%87%E5%87%86%E5%8C%96%E7%BB%84%E7%BB%87"><span class="nav-number">1.3.</span> <span class="nav-text">标准化组织</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#ITU%EF%BC%88%E5%9B%BD%E9%99%85%E7%94%B5%E4%BF%A1%E8%81%94%E7%9B%9F%EF%BC%89"><span class="nav-number">1.3.1.</span> <span class="nav-text">ITU（国际电信联盟）</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#IETF%EF%BC%88%E4%BA%92%E8%81%94%E7%BD%91%E5%B7%A5%E7%A8%8B%E4%BB%BB%E5%8A%A1%E7%BB%84%EF%BC%89"><span class="nav-number">1.3.2.</span> <span class="nav-text">IETF（互联网工程任务组）</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E6%96%87%E7%8C%AE"><span class="nav-number">1.4.</span> <span class="nav-text">参考文献</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/%E5%BC%80%E5%8F%91%E8%80%85%E5%AF%86%E7%A0%81%E5%AD%A6/%E5%AF%86%E7%A0%81%E5%AD%A6%E6%A0%87%E5%87%86/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码学标准
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-06 15:09:20" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:20+08:00">2021-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2020-12-17 16:42:44" itemprop="dateModified" datetime="2020-12-17T16:42:44+08:00">2020-12-17</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E5%BC%80%E5%8F%91%E8%80%85%E5%AF%86%E7%A0%81%E5%AD%A6/" itemprop="url" rel="index"><span itemprop="name">开发者密码学</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="密码学标准"><a href="#密码学标准" class="headerlink" title="密码学标准"></a>密码学标准</h1><h2 id="Public-Key-Cryptography-System-PKCS"><a href="#Public-Key-Cryptography-System-PKCS" class="headerlink" title="Public Key Cryptography System(PKCS)"></a>Public Key Cryptography System(PKCS)</h2><p>PKCS#1主要定义了RSA加密签名的算法、密钥格式、以及加密签名数据格式。</p>
+<table>
+<thead>
+<tr>
+<th align="center">Version</th>
+<th>RFC 编号</th>
+<th>简介</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="center">PKCS #1</td>
+<td>RFC 8017</td>
+<td>RSA Cryptography Standard（RSA加密签名模式以及公私钥格式）包括加密方案RSAES-OAEP, RSAES-PKCS1-V1.5, 签名方案RSASSA-PSS, RSASSA-PKCS1-V1.5</td>
+</tr>
+<tr>
+<td align="center">PKCS #5</td>
+<td>RFC 8018</td>
+<td>Password-based Encryption Standard</td>
+</tr>
+<tr>
+<td align="center">PKCS #7</td>
+<td>RFC 2315</td>
+<td>Cryptographic Message Syntax Standard（包括了加密/签名数据格式，分组密码填充格式）</td>
+</tr>
+<tr>
+<td align="center">PKCS #8</td>
+<td>RFC 5958 RFC 5208</td>
+<td>Private-Key Information Syntax Standard (包括了通用的私钥文件格式). RFC5958对RFC5208定义的私钥格式进行了一些修改，主要是支持了包含公钥内容，因此RFC5958的私钥格式和RFC5208的私钥格式版本号分别为1和0.</td>
+</tr>
+<tr>
+<td align="center">PKCS #10</td>
+<td>RFC 2986</td>
+<td>Certification Request Standard</td>
+</tr>
+<tr>
+<td align="center">PKCS #12</td>
+<td>RFC 7292</td>
+<td>Personal Information Exchange Syntax Standard</td>
+</tr>
+</tbody></table>
+<h2 id="椭圆曲线公钥密码"><a href="#椭圆曲线公钥密码" class="headerlink" title="椭圆曲线公钥密码"></a>椭圆曲线公钥密码</h2><p>Standards for Efficient Cryptography（SEC）定义了椭圆曲线公钥密码的各种标准，其中SEC 1中定义了椭圆曲线私钥格式，同RFC 5159定义的椭圆曲线私钥格式一致，通常称其为“sec1格式私钥”。</p>
+<h2 id="标准化组织"><a href="#标准化组织" class="headerlink" title="标准化组织"></a>标准化组织</h2><h3 id="ITU（国际电信联盟）"><a href="#ITU（国际电信联盟）" class="headerlink" title="ITU（国际电信联盟）"></a>ITU（国际电信联盟）</h3><blockquote>
+<p>国际电信联盟是联合国的一个重要专门机构，也是联合国机构中历史最长的一个国际组织。简称“国际电联”、“电联”或”ITU”<a href=""></a>。</p>
+<p>国际电联是主管信息通信技术事务的联合国机构，负责分配和管理全球无线电频谱与卫星轨道资源，制定全球电信标准，向发展中国家提供电信援助，促进全球电信发展。</p>
+<p>作为世界范围内联系各国政府和私营部门的纽带，国际电联通过其麾下的无线电通信、标准化和发展电信展览活动，而且是信息社会世界高峰会议的主办机构。</p>
+<p>国际电联总部设于瑞士日内瓦，其成员包括193个成员国和700多个部门成员及部门准成员和学术成员。每年的5月17日是世界电信日(World Telecommunication Day)</p>
+<p>—-引用自百度百科</p>
+</blockquote>
+<h3 id="IETF（互联网工程任务组）"><a href="#IETF（互联网工程任务组）" class="headerlink" title="IETF（互联网工程任务组）"></a>IETF（互联网工程任务组）</h3><blockquote>
+<p>互联网工程任务组，成立于1985年底，是全球互联网最具权威的技术标准化组织，主要任务是负责互联网相关技术规范的研发和制定，当前绝大多数国际互联网技术标准出自IETF</p>
+<p>—-引用自百度百科</p>
+</blockquote>
+<h2 id="参考文献"><a href="#参考文献" class="headerlink" title="参考文献"></a>参考文献</h2><p>[1] <a target="_blank" rel="noopener" href="https://www.secg.org/">standards for Efficient Cryptography Group</a></p>
+<blockquote>
+<p>The Standards for Efficient Cryptography Group (SECG), an industry consortium, was founded in 1998 to develop commercial standards that facilitate the adoption of efficient cryptography and interoperability across a wide range of computing platforms. SECG members include leading technology companies and key industry players in the information security industry.</p>
+</blockquote>
+<p>[2] <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5915">RFC 5915 - Elliptic Curve Private Key Structure</a></p>
+<p>[3] <a target="_blank" rel="noopener" href="https://en.wikipedia.org/wiki/PKCS">Public-Key Cryptography Standards (PKCS)</a></p>
+<blockquote>
+<p>PKCS introduction from wikipedia</p>
+</blockquote>
+<p>[4] <a target="_blank" rel="noopener" href="https://www.itu.int/rec/T-REC-X.509/en">x.509</a></p>
+<p>[5] <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8017">PKCS #1: RSA Cryptography Specifications Version 2.2</a></p>
+<p>[6] <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc8018">PKCS #5: Password-Based Cryptography Specification Version 2.1</a></p>
+<p>[7] <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc2315">PKCS #7: Cryptographic Message Syntax Version 1.5</a></p>
+<p>[8] <a target="_blank" rel="noopener" href="https://www.itu.int/rec/T-REC-X.690/">x.609</a></p>
+<p>[9] <a target="_blank" rel="noopener" href="https://tools.ietf.org/html/rfc5480">RFC 5480 Elliptic Curve Cryptography Subject Public Key Information</a></p>
+<p>[10]</p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E5%BC%80%E5%8F%91%E8%80%85%E5%AF%86%E7%A0%81%E5%AD%A6/%E5%85%AC%E9%92%A5%E5%AF%86%E7%A0%81/" rel="prev" title="公钥密码">
+                  <i class="fa fa-chevron-left"></i> 公钥密码
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E5%AF%86%E7%A0%81%E5%AD%A6%E6%95%B0%E5%AD%A6%E5%9F%BA%E7%A1%80/%E6%A4%AD%E5%9C%86%E6%9B%B2%E7%BA%BF%E6%95%B0%E5%AD%A6/" rel="next" title="椭圆曲线数学">
+                  椭圆曲线数学 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

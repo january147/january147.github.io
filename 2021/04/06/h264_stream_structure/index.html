@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="H.264">
+<meta property="og:type" content="article">
+<meta property="og:title" content="h264_stream_structure">
+<meta property="og:url" content="http://example.com/2021/04/06/h264_stream_structure/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="H.264">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/h264_layers.png">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/h264_stream.png">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/nalu.png">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/nalu_type.png">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/nalu_slice_header.png">
+<meta property="og:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/slice_type.png">
+<meta property="article:published_time" content="2021-04-06T07:09:20.731Z">
+<meta property="article:modified_time" content="2021-04-06T07:31:27.657Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="http://example.com/2021/04/06/h264_stream_structure/materials/h264_layers.png">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/h264_stream_structure/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>h264_stream_structure | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#H-264%E8%A7%86%E9%A2%91%E7%BC%96%E7%A0%81%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.</span> <span class="nav-text">H.264视频编码格式</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-H-264%E7%AE%80%E4%BB%8B"><span class="nav-number">1.1.</span> <span class="nav-text">1. H.264简介</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#2-H-264%E8%A7%86%E9%A2%91%E7%A0%81%E6%B5%81%E7%9A%84%E5%9F%BA%E6%9C%AC%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">2. H.264视频码流的基本格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#3-%E8%A7%86%E9%A2%91%E5%B8%A7%EF%BC%88slice%EF%BC%89%E6%A0%BC%E5%BC%8F"><span class="nav-number">1.3.</span> <span class="nav-text">3. 视频帧（slice）格式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#4-%E4%B8%80%E4%B8%AA%E4%BE%8B%E5%AD%90"><span class="nav-number">1.4.</span> <span class="nav-text">4. 一个例子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#5-%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84%E8%A7%A3%E6%9E%90%E5%99%A8-%E5%8F%AA%E8%AF%BB%E5%8F%96nalu%E5%92%8Cslice%E7%9A%84%E7%B1%BB%E5%9E%8B"><span class="nav-number">1.5.</span> <span class="nav-text">5. 一个简单的解析器(只读取nalu和slice的类型)</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%82%E8%80%83%E8%B5%84%E6%96%99"><span class="nav-number">1.6.</span> <span class="nav-text">参考资料</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/h264_stream_structure/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          h264_stream_structure
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2021-04-06 15:09:20 / Modified: 15:31:27" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:20+08:00">2021-04-06</time>
+    </span>
+
+  
+</div>
+
+            <div class="post-description">H.264</div>
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="H-264视频编码格式"><a href="#H-264视频编码格式" class="headerlink" title="H.264视频编码格式"></a>H.264视频编码格式</h1><h2 id="1-H-264简介"><a href="#1-H-264简介" class="headerlink" title="1. H.264简介"></a>1. H.264简介</h2><p>&emsp;&emsp;H.264又称成为AVC（Advanced Video Codeing），是一种高效的视频编码方式。</p>
+<h2 id="2-H-264视频码流的基本格式"><a href="#2-H-264视频码流的基本格式" class="headerlink" title="2. H.264视频码流的基本格式"></a>2. H.264视频码流的基本格式</h2><p>&emsp;&emsp;为了适应各种保存和网络传输方式，H.264视频码流被分为两个层次，底层为VCL（Video Coding Layer），其封装编码好的视频帧数据，顶层为NAL(Network Abstraction Layer)，其封装VCL的视频帧以及一些描述视频帧信息的元数据。</p>
+<p><img src="materials/h264_layers.png" alt="h264_layers"></p>
+<p>&emsp;&emsp;在NAL中，H.264码流由起始码（start code）和网络抽象层单元（NALU）组成。起始码为<code>00 00 00 01</code>或者<code>00 00 01</code>，其作用是分隔码流中的NALU，NALU中封装了视频帧和描述视频帧的元数据。</p>
+<p><img src="materials/h264_stream.png" alt="h264_stream"></p>
+<p>&emsp;&emsp;NALU由NALU头和载荷数据（Raw Byte Stream Payload）组成。</p>
+<p><img src="materials/nalu.png" alt="nalu"></p>
+<p>&emsp;&emsp;NALU头部占用1个字节，各字段的内容如下。</p>
+<table>
+<thead>
+<tr>
+<th>字段</th>
+<th>描述</th>
+<th>长度（bit）</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>forbidden bit</td>
+<td>表示该NALU是否错误, 一般情况均为0</td>
+<td>1</td>
+</tr>
+<tr>
+<td>nal_ref_idc</td>
+<td>该字段<strong>似乎</strong>表示此NALU的数据是否被其他数据引用</td>
+<td>2</td>
+</tr>
+<tr>
+<td>nal_unit_type</td>
+<td>表示该NALU的载荷类型</td>
+<td>5</td>
+</tr>
+</tbody></table>
+<p>&emsp;&emsp;根据H.264编码的标准文档，nal_ref_idc字段和nal_unit_type字段相关，根据我的理解，如果当前载荷数据会被其他数据引用的则nal_ref_idc的值需要大于0，否则其值等于0，因此也可以将nal_ref_idc字段的数值作为nalu的重要性来看。</p>
+<p>&emsp;&emsp;下表为NALU的所有类型，这里先介绍下IDR帧，IDR(Instantaneous Decoding Refresh)帧是一种不依赖其他任何帧的可独立解码的帧，用于视频的随机访问以及避免视频流中的错误传播。在H.264中，I帧可能会依赖其之前的帧因此可能无法独立解码，因此并非所有I帧都是IDR帧，而IDR帧必为I帧。我们这里关注其中对解码至关重要的四种类型。nal_unit_type为<strong>1</strong>时表示载荷数据为<strong>非</strong>IDR的视频帧数据（VAL层的视频帧数据称为slice）;nal_unit_type为<strong>5</strong>时表示载荷数据为IDR视频帧数据；nal_unit_type为<strong>7</strong>时表示载荷数据为SPS（Sequence Parameter Set）；nal_unit_type为<strong>8</strong>时表示载荷数据为PPS(Picture Parameter Set)。这四种类型对于解码视频都十分重要，根据H.264编码的标准文档，其对应的nal_ref_idc值应均为非0值。</p>
+<blockquote>
+<p>NALU数据中的字节内的比特顺序为字节中的<strong>MSB</strong>(最高位/最左边的bit)作为第一个bit，<strong>LSB</strong>作为最后一个bit。</p>
+</blockquote>
+<p><img src="materials/nalu_type.png" alt="nalu_type"></p>
+<h2 id="3-视频帧（slice）格式"><a href="#3-视频帧（slice）格式" class="headerlink" title="3. 视频帧（slice）格式"></a>3. 视频帧（slice）格式</h2><p>&emsp;&emsp;上一节介绍的NALU载荷类型中有两种视频帧载荷类型，分别为IDR帧和非IDR帧，这类视频帧（slice）数据也是有结构的，并且分为多种类型，其基本结构也是由header和数据构成，不过header的结构比较复杂，并且是变长的，下面是<strong>一小部分</strong>字段，我们这里只关注其中的slice_type字段。slice_type字段为slice_header中的第二个字段，其采用0阶指数哥伦布编码保存,其可以用于判断视频帧的类型。</p>
+<p><img src="materials/nalu_slice_header.png" alt="slice_header"></p>
+<p><img src="materials/slice_type.png" alt="slice_type"></p>
+<h2 id="4-一个例子"><a href="#4-一个例子" class="headerlink" title="4. 一个例子"></a>4. 一个例子</h2><p>&emsp;&emsp;下面是ffmpeg编码的一段h264视频码流, 我已经按照起始码分开了, 可以按照上文介绍的格式来读取一些信息。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">[00 00 00 01] 27 64 00 28 AC 2B 40 50 17 FC B0 80 00 00 03 00 80 00 00 1E 70 50 00 1E 84 80 00 2F AF 37 BD C0 3C 48 9A 80 </span><br><span class="line"></span><br><span class="line">[00 00 00 01] 28 EE 02 5C B0 </span><br><span class="line"></span><br><span class="line">[00 00 00 01] 25 88 80 4F C9 14 22 7F EE F9 B0 96 6B F4 9F 44 77 DB 5F E2 FD 65 D6 11 A9 B3 C2 B0 80 D0 07 F0 D8 09 10 F7 51 DA 15 01 B9 06 2B E9 EF A9 B0 AF 70 08 26 E4 0B D7 F6 BD E0 A3 F9 F5 D8 9B 00 AA 07 C1 29 71 5E 7F 09 22 5D D6 06 93 6B CA AC 83 AE 6F 72 29 B5 AA 4F E7 ED 44 E1 ...[数据太长，省略]</span><br><span class="line"></span><br><span class="line">[00 00 00 01] 21 9A 02 3F 96 F0 00 8A 71 C0 06 E3 32 02 B0 32 15 4C 40 89 46 B6 BD 1E 5A 03 E7 4C FA 9B 95 70 3B B6 A6 EF E6 5D CC 73 98 00 31 B8 AD 56 83 D5 5E D5 77 9D B0 69 C3 ...[数据太长，省略]</span><br><span class="line">...</span><br><span class="line"></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+<p>&emsp;&emsp;第一个NAL的header为<code>0x27</code>, 二进制形式为<code>00100111</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为7，查表可知其为SPS。</p>
+<p>&emsp;&emsp;第二个NAL的header为<code>0x28</code>, 二进制形式为<code>00101000</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为8，查表可知其为PPS。</p>
+<p>&emsp;&emsp;第三个NAL的header为<code>0x25</code>, 二进制形式为<code>00100101</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为5，查表可知其为IDR slice。我们继续查看其slice header，由于slice header是变长的，其前8bit为<code>0x88</code>,二进制为<code>10001000</code>,按照指数哥伦布编码方式解码，得到slice_type字段值为7, 为查表可知为I slice。</p>
+<p>&emsp;&emsp;第三个NAL的header为<code>0x21</code>, 二进制形式为<code>00100001</code>，<code>nal_ref_idc</code>字段值为1, <code>nal_unit_type</code>字段值为1，查表可知其为<strong>非</strong>IDR slice。我们继续查看其slice header，其前8bit为<code>0x9A</code>, 二进制为<code>10011010</code>,按照指数哥伦布编码方式解码，得到slice_type字段值为5, 为查表可知为P slice。</p>
+<h2 id="5-一个简单的解析器-只读取nalu和slice的类型"><a href="#5-一个简单的解析器-只读取nalu和slice的类型" class="headerlink" title="5. 一个简单的解析器(只读取nalu和slice的类型)"></a>5. 一个简单的解析器(只读取nalu和slice的类型)</h2><blockquote>
+<p><a target="_blank" rel="noopener" href="https://gitee.com/JanuaryJIAN/codes/91dz36eacqsux7h0ty28r90#0-qzone-1-24479-d020d2d2a4e8d1a374a433f596ad1440">https://gitee.com/JanuaryJIAN/codes/91dz36eacqsux7h0ty28r90#0-qzone-1-24479-d020d2d2a4e8d1a374a433f596ad1440</a></p>
+</blockquote>
+<h2 id="参考资料"><a href="#参考资料" class="headerlink" title="参考资料"></a>参考资料</h2><p><a target="_blank" rel="noopener" href="https://www.itu.int/rec/T-REC-H.264">https://www.itu.int/rec/T-REC-H.264</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/Linux%E5%86%85%E6%A0%B8%E5%AF%86%E7%A0%81%E5%AD%A6API/" rel="prev" title="Linux内核密码学API">
+                  <i class="fa fa-chevron-left"></i> Linux内核密码学API
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

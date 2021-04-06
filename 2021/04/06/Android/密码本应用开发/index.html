@@ -1,0 +1,361 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="密码本应用开发intent启动service 12Intent intent &#x3D; new Intent(this, SimpleService.class);startService(intent);  发送广播 12Intent intent &#x3D; new Intent(&quot;action&quot;);sendBroadcast(intent);    EventBusGradle引入依赖">
+<meta property="og:type" content="article">
+<meta property="og:title" content="密码本应用开发">
+<meta property="og:url" content="http://example.com/2021/04/06/Android/%E5%AF%86%E7%A0%81%E6%9C%AC%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="密码本应用开发intent启动service 12Intent intent &#x3D; new Intent(this, SimpleService.class);startService(intent);  发送广播 12Intent intent &#x3D; new Intent(&quot;action&quot;);sendBroadcast(intent);    EventBusGradle引入依赖">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2021-04-06T07:09:19.621Z">
+<meta property="article:modified_time" content="2021-03-17T02:31:12.432Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/Android/%E5%AF%86%E7%A0%81%E6%9C%AC%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>密码本应用开发 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E6%9C%AC%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91"><span class="nav-number">1.</span> <span class="nav-text">密码本应用开发</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#intent"><span class="nav-number">1.1.</span> <span class="nav-text">intent</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#EventBus"><span class="nav-number">1.2.</span> <span class="nav-text">EventBus</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%B9%BF%E6%92%AD%E6%8E%A5%E6%94%B6%E5%99%A8"><span class="nav-number">1.3.</span> <span class="nav-text">广播接收器</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%95%B4%E6%95%B0%E5%92%8C%E5%AD%97%E8%8A%82%E6%95%B0%E7%BB%84%E8%BD%AC%E6%8D%A2"><span class="nav-number">1.4.</span> <span class="nav-text">整数和字节数组转换</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E7%BD%91%E7%BB%9C%E8%AE%BF%E9%97%AE%E6%9D%83%E9%99%90"><span class="nav-number">1.5.</span> <span class="nav-text">设置网络访问权限</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ADB%E8%BD%AC%E5%8F%91%E7%AB%AF%E5%8F%A3"><span class="nav-number">1.6.</span> <span class="nav-text">ADB转发端口</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%96%E6%B6%88%E8%BF%94%E5%9B%9E%E9%94%AE%E9%80%80%E5%87%BAActivity"><span class="nav-number">1.7.</span> <span class="nav-text">取消返回键退出Activity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AF%86%E7%A0%81%E4%BF%9D%E6%8A%A4%E7%95%8C%E9%9D%A2"><span class="nav-number">1.8.</span> <span class="nav-text">密码保护界面</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%85%B3%E9%97%AD%E5%BD%93%E5%89%8DActivity%E6%89%80%E5%B1%9E%E6%A0%88%E7%9A%84%E6%89%80%E6%9C%89Activity"><span class="nav-number">1.9.</span> <span class="nav-text">关闭当前Activity所属栈的所有Activity</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A2%9E%E5%8A%A0%E9%A1%B6%E9%83%A8%E5%AF%BC%E8%88%AA%E6%A0%8F%E6%8C%89%E9%92%AE"><span class="nav-number">1.10.</span> <span class="nav-text">增加顶部导航栏按钮</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96Activity%E5%B8%83%E5%B1%80%E6%96%87%E4%BB%B6%E6%A0%B9View"><span class="nav-number">1.11.</span> <span class="nav-text">获取Activity布局文件根View</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#View%E5%B1%82%E6%AC%A1"><span class="nav-number">1.12.</span> <span class="nav-text">View层次</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%A6%81%E6%AD%A2%E5%AF%B9Activity%E6%88%AA%E5%B1%8F"><span class="nav-number">1.13.</span> <span class="nav-text">禁止对Activity截屏</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Selector"><span class="nav-number">1.14.</span> <span class="nav-text">Selector</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/Android/%E5%AF%86%E7%A0%81%E6%9C%AC%E5%BA%94%E7%94%A8%E5%BC%80%E5%8F%91/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          密码本应用开发
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-06 15:09:19" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:19+08:00">2021-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-03-17 10:31:12" itemprop="dateModified" datetime="2021-03-17T10:31:12+08:00">2021-03-17</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/Android/" itemprop="url" rel="index"><span itemprop="name">Android</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="密码本应用开发"><a href="#密码本应用开发" class="headerlink" title="密码本应用开发"></a>密码本应用开发</h1><h2 id="intent"><a href="#intent" class="headerlink" title="intent"></a>intent</h2><p>启动service</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent(<span class="keyword">this</span>, SimpleService.class);</span><br><span class="line">startService(intent);</span><br></pre></td></tr></table></figure>
+
+<p>发送广播</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">Intent intent = <span class="keyword">new</span> Intent(<span class="string">&quot;action&quot;</span>);</span><br><span class="line">sendBroadcast(intent);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="EventBus"><a href="#EventBus" class="headerlink" title="EventBus"></a>EventBus</h2><p>Gradle引入依赖</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">implementation &#39;org.greenrobot:eventbus:3.2.0&#39;</span><br></pre></td></tr></table></figure>
+
+<p>定义事件对象</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">public static class MessageEvent &#123; </span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<p>订阅事件</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line"> <span class="comment">// 注册订阅对象</span></span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStart</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">super</span>.onStart();</span><br><span class="line">     EventBus.getDefault().register(<span class="keyword">this</span>);</span><br><span class="line"> &#125;</span><br><span class="line"></span><br><span class="line"> <span class="meta">@Override</span></span><br><span class="line"> <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onStop</span><span class="params">()</span> </span>&#123;</span><br><span class="line">     <span class="keyword">super</span>.onStop();</span><br><span class="line">     EventBus.getDefault().unregister(<span class="keyword">this</span>);</span><br><span class="line"> &#125;</span><br><span class="line"> </span><br><span class="line"> <span class="comment">// 设置事件处理方法</span></span><br><span class="line"><span class="meta">@Subscribe(threadMode = ThreadMode.MAIN)</span>  </span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessageEvent</span><span class="params">(MessageEvent event)</span> </span>&#123;<span class="comment">/* Do something */</span>&#125;;</span><br></pre></td></tr></table></figure>
+
+<p>发送事件</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">EventBus.getDefault().post(new MessageEvent());</span><br></pre></td></tr></table></figure>
+
+<h2 id="广播接收器"><a href="#广播接收器" class="headerlink" title="广播接收器"></a>广播接收器</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">// 创建广播接收器，编写处理方法</span></span><br><span class="line">BroadcastReceiver br = <span class="keyword">new</span> BroadcastReceiver() &#123;</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onReceive</span><span class="params">(Context context, Intent intent)</span> </span>&#123;</span><br><span class="line">    	String action = intent.getAction();</span><br><span class="line">	&#125;</span><br><span class="line">&#125;;</span><br><span class="line"><span class="comment">// 设置过滤器，仅接收指定类型的广播</span></span><br><span class="line">IntentFilter intent_filter = <span class="keyword">new</span> IntentFilter();</span><br><span class="line">intent_filter.addAction(MainActivity.ACTION_LOAD_DB_RET);</span><br><span class="line"><span class="comment">// 注册广播接收器</span></span><br><span class="line">registerReceiver(br, intent_filter);</span><br></pre></td></tr></table></figure>
+
+
+
+<h2 id="整数和字节数组转换"><a href="#整数和字节数组转换" class="headerlink" title="整数和字节数组转换"></a>整数和字节数组转换</h2><p>java没有直接转换整数和字节数组的方法，直接使用位运算实现转换</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">int</span> tlen = (buffer[<span class="number">0</span>] &amp; <span class="number">0xff</span>) | (buffer[<span class="number">1</span>] &amp; <span class="number">0xff</span>) | (buffer[<span class="number">2</span>] &amp; <span class="number">0xff</span>) | (buffer[<span class="number">3</span>] &amp; <span class="number">0xff</span>);</span><br></pre></td></tr></table></figure>
+
+<h2 id="设置网络访问权限"><a href="#设置网络访问权限" class="headerlink" title="设置网络访问权限"></a>设置网络访问权限</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">&lt;uses-permission android:name=<span class="string">&quot;android.permission.INTERNET&quot;</span> /&gt;</span><br></pre></td></tr></table></figure>
+
+<h2 id="ADB转发端口"><a href="#ADB转发端口" class="headerlink" title="ADB转发端口"></a>ADB转发端口</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">adb reverse tcp:1234 tcp:1234</span><br><span class="line">adb forward tcp:1234 tcp:1234</span><br></pre></td></tr></table></figure>
+
+<h2 id="取消返回键退出Activity"><a href="#取消返回键退出Activity" class="headerlink" title="取消返回键退出Activity"></a>取消返回键退出Activity</h2><p>覆盖Activity的onBackPressed方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onBackPressed</span><span class="params">()</span> </span>&#123;</span><br><span class="line"></span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="密码保护界面"><a href="#密码保护界面" class="headerlink" title="密码保护界面"></a>密码保护界面</h2><p>密码本程序需要在程序进入后台时实现自动锁定，下次打开时弹出密码保护界面请求用户输入密码。然而Android系统没有提供检测APP进入后台（或者锁屏）的API，其提供的Activity生命周期API无法区分一个Activity是因为整个APP被切到后台还是因此启动了其他Activity而被切换到后台，因此无法仅仅通过Activity的生命周期API显示在合适的时候弹出密码保护界面。在合适的时候指当整个APP被切到后台时下次打开任意Activity都要弹出密码保护界面，而APP内部发生的Activity切换（打开新Activity和返回原Activity以及屏幕旋转导致Activity重新加载）时不要弹出密码保护界面。</p>
+<p>基本实现思路是使用Application对象保存一个全局的locked变量，同时保存一个设置为锁定状态（locked=true）时的时间戳（locked_time）。当一个Activity停止（onStop）时设置locked为true并且将当前时间戳保存在locked_time中，当一个Activity恢复时（onStart），检查locked和当前时间戳，如果locked=true并且当前时间戳超过locked_time时间大于1秒（1000毫秒，也可以根据需要设置），则视为从后台恢复，弹出密码保护界面（密码保护界面验证身份后将locked设置为false），否则视为APP内部跳转，不弹出密码保护界面，并且将locked设置false。</p>
+<p>上述思路基于一个假设，即APP内部的Activity切换通常很快，在上一个Activity停止后下一个Activity在极短的时间就会启动，不会超过设置的延迟时间（比如1秒），而切换到后台再到前台时时间间隔较长，均会超过设置的延迟时间，因此能够有效。</p>
+<p>然而，在实际测试中发现A启动B后，B的onStart会先于A的onStop调用，在B启动时A还没有设置locked为true，B启动不会触发密码保护界面，然而在B运行过程中A的onStop将locked设置为了true，并设置了locked_time,当B执行完返回A时由于同样A的onStart会先于B的onStop调用，A访问到locked为true并且locked_time是A设置的时间（B的onStop在A的onStart之后才调用），其肯定大于了设置的较短的时间延迟，从而导致密码保护界面被弹出。</p>
+<p>上述问题的主要原因是当B启动后，A设置locked为true的操作就应该取消了，即B执行过程中不能被除了自己以外的Acivity执行锁定操作，因此还需要再Application对象中加入一个全局变量代表当前执行的Activity，只有当前Activity能够执行锁定操作，这样在B启动后，A就不会再执行锁定操作了，上述问题得到了解决。</p>
+<p>基本锁定方式</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">onStart() --&gt; check lock(unlock if necessary)</span><br><span class="line">onStop() --&gt; lock</span><br></pre></td></tr></table></figure>
+
+<h2 id="关闭当前Activity所属栈的所有Activity"><a href="#关闭当前Activity所属栈的所有Activity" class="headerlink" title="关闭当前Activity所属栈的所有Activity"></a>关闭当前Activity所属栈的所有Activity</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">finishAffinity();</span><br></pre></td></tr></table></figure>
+
+<h2 id="增加顶部导航栏按钮"><a href="#增加顶部导航栏按钮" class="headerlink" title="增加顶部导航栏按钮"></a>增加顶部导航栏按钮</h2><p>首先在res中创建menu目录，然后在menu中创建一个menu的xml文件</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">menu</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    &lt;item</span><br><span class="line">        android:id=&quot;@+id/pswd_menu_save&quot;</span><br><span class="line">        android:title=&quot;保存&quot;</span><br><span class="line">        android:icon=&quot;@drawable/ic_insert_drive_file_black_24dp&quot;</span><br><span class="line">        <span class="comment">&lt;!-- showAsAction控制该项是否直接显示在导航栏上 --&gt;</span></span><br><span class="line">        android:showAsAction=&quot;ifRoom&quot;/&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">menu</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<p>在对应Activity中重写以下方法</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//重写该方法处理填充menu</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onCreateOptionsMenu</span><span class="params">(Menu menu)</span> </span>&#123;</span><br><span class="line">    <span class="comment">//// 非 AppCompatActivity, AppCompatActivity使用会导致app:showAsAction无效</span></span><br><span class="line">    <span class="comment">//MenuInflater menu_inflater = new MenuInflater(this);</span></span><br><span class="line">    <span class="comment">// AppCompatActivity</span></span><br><span class="line">    MenuInflagter menu_inflater = getMenuInflater();</span><br><span class="line">    menu_inflater.inflate(R.menu.pswd_menu, menu);</span><br><span class="line">    <span class="keyword">return</span> <span class="keyword">super</span>.onCreateOptionsMenu(menu);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line"><span class="comment">// 重写该方法监听按键事件</span></span><br><span class="line"><span class="meta">@Override</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">boolean</span> <span class="title">onOptionsItemSelected</span><span class="params">(<span class="meta">@NonNull</span> MenuItem item)</span> </span>&#123;</span><br><span class="line">    <span class="keyword">switch</span> (item.getItemId()) &#123;</span><br><span class="line">        <span class="keyword">case</span> R.id.pswd_menu_save:</span><br><span class="line">            saveData();</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">&#125;</span><br><span class="line"><span class="keyword">return</span> <span class="keyword">super</span>.onOptionsItemSelected(item);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+
+<h2 id="获取Activity布局文件根View"><a href="#获取Activity布局文件根View" class="headerlink" title="获取Activity布局文件根View"></a>获取Activity布局文件根View</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">return</span> ((ViewGroup)context.findViewById(android.R.id.content)).getChildAt(<span class="number">0</span>);  </span><br></pre></td></tr></table></figure>
+
+<h2 id="View层次"><a href="#View层次" class="headerlink" title="View层次"></a>View层次</h2><p>xml文件中后边的View在前边的View上层显示</p>
+<h2 id="禁止对Activity截屏"><a href="#禁止对Activity截屏" class="headerlink" title="禁止对Activity截屏"></a>禁止对Activity截屏</h2><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">getWindow().addFlags(WindowManager.LayoutParams.FLAG_SECURE);</span><br></pre></td></tr></table></figure>
+
+<h2 id="Selector"><a href="#Selector" class="headerlink" title="Selector"></a>Selector</h2><p>selector可以给控件不同状态设置不同的属性，通过在Drawable目录先添加selector xml文件可以新建一个selector</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">&lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot;?&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">selector</span> <span class="attr">xmlns:android</span>=<span class="string">&quot;http://schemas.android.com/apk/res/android&quot;</span>&gt;</span></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">android:state_window_focused</span>=<span class="string">&quot;false&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:drawable</span>=<span class="string">&quot;@drawable/ic_visibility_off_black&quot;</span> /&gt;</span>  <span class="comment">&lt;!-- 正常情况下imagebutton效果 --&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;<span class="name">item</span> <span class="attr">android:state_focused</span>=<span class="string">&quot;false&quot;</span> <span class="attr">android:state_pressed</span>=<span class="string">&quot;true&quot;</span></span></span><br><span class="line"><span class="tag">    <span class="attr">android:drawable</span>=<span class="string">&quot;@drawable/ic_visibility_black&quot;</span> /&gt;</span> <span class="comment">&lt;!-- 按下后imagebutton效果 --&gt;</span>&gt;</span><br><span class="line"><span class="tag">&lt;/<span class="name">selector</span>&gt;</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/attack/protocol_attack/" rel="next" title="protocol_attack">
+                  protocol_attack <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>

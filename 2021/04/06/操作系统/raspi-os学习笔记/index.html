@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.4.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/css/main.css">
+
+
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.3/css/all.min.css">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<meta name="hexo-config" content="{&quot;hostname&quot;:&quot;example.com&quot;,&quot;root&quot;:&quot;/&quot;,&quot;images&quot;:&quot;/images&quot;,&quot;scheme&quot;:&quot;Gemini&quot;,&quot;version&quot;:&quot;8.3.0&quot;,&quot;exturl&quot;:false,&quot;sidebar&quot;:{&quot;position&quot;:&quot;left&quot;,&quot;display&quot;:&quot;post&quot;,&quot;padding&quot;:18,&quot;offset&quot;:12},&quot;copycode&quot;:false,&quot;bookmark&quot;:{&quot;enable&quot;:false,&quot;color&quot;:&quot;#222&quot;,&quot;save&quot;:&quot;auto&quot;},&quot;fancybox&quot;:false,&quot;mediumzoom&quot;:false,&quot;lazyload&quot;:false,&quot;pangu&quot;:false,&quot;comments&quot;:{&quot;style&quot;:&quot;tabs&quot;,&quot;active&quot;:null,&quot;storage&quot;:true,&quot;lazyload&quot;:false,&quot;nav&quot;:null},&quot;motion&quot;:{&quot;enable&quot;:true,&quot;async&quot;:false,&quot;transition&quot;:{&quot;post_block&quot;:&quot;fadeIn&quot;,&quot;post_header&quot;:&quot;fadeInDown&quot;,&quot;post_body&quot;:&quot;fadeInDown&quot;,&quot;coll_header&quot;:&quot;fadeInLeft&quot;,&quot;sidebar&quot;:&quot;fadeInUp&quot;}},&quot;prism&quot;:false,&quot;i18n&quot;:{&quot;placeholder&quot;:&quot;Searching...&quot;,&quot;empty&quot;:&quot;We didn&#39;t find any results for the search: ${query}&quot;,&quot;hits_time&quot;:&quot;${hits} results found in ${time} ms&quot;,&quot;hits&quot;:&quot;${hits} results found&quot;}}">
+<meta name="description" content="raspi-os学习笔记qemu的raspi3虚拟机中第一个串行接口对应PL011 UART硬件串口，第二个串行接口对应mini UART软件串口 GPIO alt function对于的寄存器值  123# armv8，cpu进入低功耗指令wfiwfe  pl011 uart中设置波特率的寄存器值的计算方法1234567891011121314151617Example 3.1 is an ex">
+<meta property="og:type" content="article">
+<meta property="og:title" content="raspi-os学习笔记">
+<meta property="og:url" content="http://example.com/2021/04/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/raspi-os%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:site_name" content="January&#39;s blog">
+<meta property="og:description" content="raspi-os学习笔记qemu的raspi3虚拟机中第一个串行接口对应PL011 UART硬件串口，第二个串行接口对应mini UART软件串口 GPIO alt function对于的寄存器值  123# armv8，cpu进入低功耗指令wfiwfe  pl011 uart中设置波特率的寄存器值的计算方法1234567891011121314151617Example 3.1 is an ex">
+<meta property="og:locale" content="en_US">
+<meta property="og:image" content="c:/Users/january/AppData/Roaming/Typora/typora-user-images/image-20210112222229810.png">
+<meta property="article:published_time" content="2021-04-06T07:09:20.075Z">
+<meta property="article:modified_time" content="2021-01-24T14:39:41.772Z">
+<meta property="article:author" content="January">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="c:/Users/january/AppData/Roaming/Typora/typora-user-images/image-20210112222229810.png">
+
+
+<link rel="canonical" href="http://example.com/2021/04/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/raspi-os%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+
+
+<meta name="hexo-config-page" content="{&quot;sidebar&quot;:&quot;&quot;,&quot;isHome&quot;:false,&quot;isPost&quot;:true,&quot;lang&quot;:&quot;en&quot;}">
+<meta name="hexo-config-calendar" content="">
+<title>raspi-os学习笔记 | January's blog</title><script data-pjax src="/js/load-config.js"></script>
+  
+
+
+
+
+  <noscript>
+    <link rel="stylesheet" href="/css/noscript.css">
+  </noscript>
+<link rel="alternate" href="/atom.xml" title="January's blog" type="application/atom+xml">
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar" role="button">
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+        <span class="toggle-line"></span>
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">January's blog</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+<nav class="site-nav">
+  <ul class="main-menu menu">
+        <li class="menu-item menu-item-home"><a href="/" rel="section"><i class="fa fa-home fa-fw"></i>Home</a></li>
+        <li class="menu-item menu-item-about"><a href="/about/" rel="section"><i class="fa fa-user fa-fw"></i>About</a></li>
+        <li class="menu-item menu-item-tags"><a href="/tags/" rel="section"><i class="fa fa-tags fa-fw"></i>Tags</a></li>
+        <li class="menu-item menu-item-categories"><a href="/categories/" rel="section"><i class="fa fa-th fa-fw"></i>Categories</a></li>
+        <li class="menu-item menu-item-archives"><a href="/archives/" rel="section"><i class="fa fa-archive fa-fw"></i>Archives</a></li>
+  </ul>
+</nav>
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle" role="button">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#raspi-os%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0"><span class="nav-number">1.</span> <span class="nav-text">raspi-os学习笔记</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#pl011-uart%E4%B8%AD%E8%AE%BE%E7%BD%AE%E6%B3%A2%E7%89%B9%E7%8E%87%E7%9A%84%E5%AF%84%E5%AD%98%E5%99%A8%E5%80%BC%E7%9A%84%E8%AE%A1%E7%AE%97%E6%96%B9%E6%B3%95"><span class="nav-number">1.1.</span> <span class="nav-text">pl011 uart中设置波特率的寄存器值的计算方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#qemu%E6%A8%A1%E6%8B%9Fraspi3%E5%A4%9A%E6%A0%B8%E5%BF%83%E5%90%AF%E5%8A%A8%E6%96%B9%E5%BC%8F"><span class="nav-number">1.2.</span> <span class="nav-text">qemu模拟raspi3多核心启动方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%B3%A8%E6%84%8F%E4%BA%8B%E9%A1%B9"><span class="nav-number">1.3.</span> <span class="nav-text">注意事项</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#raspi3%E5%90%AF%E5%8A%A8%E6%97%B6%E5%BC%82%E5%B8%B8%E7%AD%89%E7%BA%A7"><span class="nav-number">1.4.</span> <span class="nav-text">raspi3启动时异常等级</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%AE%BE%E7%BD%AE%E4%B8%8D%E5%90%8C%E5%BC%82%E5%B8%B8%E7%BA%A7%E5%88%AB%E6%A0%88%E6%8C%87%E9%92%88"><span class="nav-number">1.5.</span> <span class="nav-text">设置不同异常级别栈指针</span></a></li></ol></li></ol></div>
+        </div>
+        <!--/noindex-->
+
+        <div class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">January</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/archives/">
+        
+          <span class="site-state-item-count">92</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+      <div class="site-state-item site-state-categories">
+            <a href="/categories/">
+          
+        <span class="site-state-item-count">23</span>
+        <span class="site-state-item-name">categories</span></a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </div>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top" role="button" aria-label="Back to top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="http://example.com/2021/04/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/raspi-os%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.gif">
+      <meta itemprop="name" content="January">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="January's blog">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          raspi-os学习笔记
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+
+      <time title="Created: 2021-04-06 15:09:20" itemprop="dateCreated datePublished" datetime="2021-04-06T15:09:20+08:00">2021-04-06</time>
+    </span>
+      <span class="post-meta-item">
+        <span class="post-meta-item-icon">
+          <i class="far fa-calendar-check"></i>
+        </span>
+        <span class="post-meta-item-text">Edited on</span>
+        <time title="Modified: 2021-01-24 22:39:41" itemprop="dateModified" datetime="2021-01-24T22:39:41+08:00">2021-01-24</time>
+      </span>
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-folder"></i>
+      </span>
+      <span class="post-meta-item-text">In</span>
+        <span itemprop="about" itemscope itemtype="http://schema.org/Thing">
+          <a href="/categories/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/" itemprop="url" rel="index"><span itemprop="name">操作系统</span></a>
+        </span>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <h1 id="raspi-os学习笔记"><a href="#raspi-os学习笔记" class="headerlink" title="raspi-os学习笔记"></a>raspi-os学习笔记</h1><p>qemu的raspi3虚拟机中第一个串行接口对应<code>PL011 UART</code>硬件串口，第二个串行接口对应<code>mini UART</code>软件串口</p>
+<p>GPIO alt function对于的寄存器值</p>
+<p><img src="C:\Users\january\AppData\Roaming\Typora\typora-user-images\image-20210112222229810.png" alt="image-20210112222229810"></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line"># armv8，cpu进入低功耗指令</span><br><span class="line">wfi</span><br><span class="line">wfe</span><br></pre></td></tr></table></figure>
+
+<h2 id="pl011-uart中设置波特率的寄存器值的计算方法"><a href="#pl011-uart中设置波特率的寄存器值的计算方法" class="headerlink" title="pl011 uart中设置波特率的寄存器值的计算方法"></a>pl011 uart中设置波特率的寄存器值的计算方法</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Example 3.1 is an example of how to calculate the divisor value.</span><br><span class="line"></span><br><span class="line">If the required baud rate is 230400 and UARTCLK &#x3D; 4MHz then:</span><br><span class="line"></span><br><span class="line">Baud Rate Divisor &#x3D; (4 × 106) &#x2F; (16 × 230400) &#x3D; 1.085</span><br><span class="line"></span><br><span class="line">This means BRDI &#x3D; 1 and BRDF &#x3D; 0.085.</span><br><span class="line"></span><br><span class="line">Therefore, fractional part, m &#x3D; integer ( (0.085 × 64) + 0.5 ) &#x3D; 5</span><br><span class="line"></span><br><span class="line">Generated baud rate divider &#x3D; 1 + 5&#x2F;64 &#x3D; 1.078</span><br><span class="line"></span><br><span class="line">Generated baud rate &#x3D; (4 × 106) &#x2F; (16 × 1.078) &#x3D; 231911</span><br><span class="line"></span><br><span class="line">Error &#x3D; (231911 - 230400) &#x2F; 230400 × 100 &#x3D; 0.656%</span><br><span class="line"></span><br><span class="line">The maximum error using a 6-bit UARTFBRD Register &#x3D; 1&#x2F;64 × 100 &#x3D; 1.56%. This occurs when m &#x3D; 1, and the error is cumulative over 64 clock ticks.</span><br></pre></td></tr></table></figure>
+
+<h2 id="qemu模拟raspi3多核心启动方式"><a href="#qemu模拟raspi3多核心启动方式" class="headerlink" title="qemu模拟raspi3多核心启动方式"></a>qemu模拟raspi3多核心启动方式</h2><p>主核心（core 0）从<code>0</code>地址开始执行，将内核加载到<code>0x80000</code>后跳转到内核执行。其他核心从<code>0x300</code>开始执行，首先进入自旋状态，等待自选表中的对应地址被修改为非0的入口地址，自旋表位于<code>0xd8</code></p>
+<blockquote>
+<p><a target="_blank" rel="noopener" href="https://github.com/s-matyukevich/raspberry-pi-os/issues/8">https://github.com/s-matyukevich/raspberry-pi-os/issues/8</a></p>
+</blockquote>
+<h2 id="注意事项"><a href="#注意事项" class="headerlink" title="注意事项"></a>注意事项</h2><p>qemu模拟的rpi3不支持EL3运行级别</p>
+<h2 id="raspi3启动时异常等级"><a href="#raspi3启动时异常等级" class="headerlink" title="raspi3启动时异常等级"></a>raspi3启动时异常等级</h2><p><code>config.txt</code>设置如下则raspi3会将内核加载到<code>0x0</code>并从<code>el3</code>启动</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">kernel_old&#x3D;1</span><br><span class="line">disable_commandline_tags&#x3D;1</span><br></pre></td></tr></table></figure>
+
+<p>如果不设置<code>kernel_old</code>则<code>raspi3    </code>会按照Linux内核启动协议将其加载到特定地址（0x8000 for 32bit and 0x80000 for 64bit）并从<code>el2</code>启动</p>
+<h2 id="设置不同异常级别栈指针"><a href="#设置不同异常级别栈指针" class="headerlink" title="设置不同异常级别栈指针"></a>设置不同异常级别栈指针</h2><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line"># 设置不同异常级别使用独立的栈指针</span><br><span class="line">msr    SPsel, #1            &#x2F;&#x2F; We want to use SP_EL&#123;1,2&#125;</span><br></pre></td></tr></table></figure>
+
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E6%93%8D%E4%BD%9C%E7%B3%BB%E7%BB%9F/raspi3%E6%97%B6%E9%92%9F/" rel="prev" title="raspi3时钟">
+                  <i class="fa fa-chevron-left"></i> raspi3时钟
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/2021/04/06/%E7%A8%8B%E5%BA%8F%E7%BC%96%E8%AF%91%E4%B8%8E%E8%B0%83%E8%AF%95/gcc%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/" rel="next" title="gcc学习笔记">
+                  gcc学习笔记 <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+<script src="/js/comments.js"></script>
+</div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+
+
+<div class="copyright">
+  &copy; 
+  <span itemprop="copyrightYear">2021</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">January</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/" class="theme-link" rel="noopener" target="_blank">NexT.Gemini</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/js/utils.js"></script><script src="/js/motion.js"></script><script src="/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+  
+
+
+
+
+
+</body>
+</html>
